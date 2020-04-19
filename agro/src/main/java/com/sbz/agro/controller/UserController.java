@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sbz.agro.dto.UserRegistrationDto;
@@ -18,6 +19,7 @@ import com.sbz.agro.service.UserService;
 import com.sbz.agro.validator.UserValidator;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
