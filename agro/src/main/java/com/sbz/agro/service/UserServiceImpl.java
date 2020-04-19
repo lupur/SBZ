@@ -14,28 +14,28 @@ import com.sbz.agro.repository.UserRepository;
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Autowired
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    
+
     @Override
     public void registerNewUser(UserRegistrationDto userDto) {
-    	if(userDto==null) return;
-    	
-    	User newUser = new User();
-    	newUser.setRole(Role.USER);
-    	newUser.setUsername(userDto.getUsername());
-    	newUser.setPassword(userDto.getPassword());
-    	userRepository.save(newUser);
+        if(userDto==null) return;
+
+        User newUser = new User();
+        newUser.setRole(Role.USER);
+        newUser.setUsername(userDto.getUsername());
+        newUser.setPassword(userDto.getPassword());
+        userRepository.save(newUser);
     }
-    
+
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
-    
+
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);

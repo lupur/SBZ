@@ -20,34 +20,32 @@ import com.sbz.agro.validator.UserValidator;
 @RestController
 public class UserController {
 
-	@Autowired
+    @Autowired
     private UserService userService;
-	
-	@Autowired
+
+    @Autowired
     private SecurityService securityService;
-	
-	@Autowired
+
+    @Autowired
     private UserValidator userValidator;
-	
-	@GetMapping(value="/registration")
-	public String registration(Model model)
-	{
-		model.addAttribute("userForm", new User());
-		
-		return "registration";
-	}
-	
-	@PostMapping(value="/registration",
-			consumes=MediaType.APPLICATION_JSON_VALUE,
-			produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity registartion(@RequestBody() UserRegistrationDto userDto, BindingResult bindingResult) {
-		userValidator.validate(userDto, bindingResult);
-		if(bindingResult.hasErrors())
-		{
-			return ResponseEntity.badRequest().body(bindingResult.getAllErrors().toString());
-		}
-		
-		userService.registerNewUser(userDto);
-		return ResponseEntity.ok().build();
-	}
+
+    @GetMapping(value="/registration")
+    public String registration(Model model)
+    {
+        model.addAttribute("userForm", new User());
+        return "registration";
+    }
+
+    @PostMapping(value="/registration",
+            consumes=MediaType.APPLICATION_JSON_VALUE,
+            produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity registartion(@RequestBody() UserRegistrationDto userDto, BindingResult bindingResult) {
+        userValidator.validate(userDto, bindingResult);
+        if(bindingResult.hasErrors())
+        {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors().toString());
+        }
+        userService.registerNewUser(userDto);
+        return ResponseEntity.ok().build();
+    }
 }
