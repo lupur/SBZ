@@ -23,24 +23,24 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
+        if (user == null)
+            return null;
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
-        //TODO refactor me, please
-        if(user.getRole() == Role.ADMIN)
-        {
+        // TODO refactor me, please
+        if (user.getRole() == Role.ADMIN) {
             grantedAuthorities.add(new SimpleGrantedAuthority(Role.ADMIN.toString()));
             grantedAuthorities.add(new SimpleGrantedAuthority(Role.EXPERT.toString()));
-        }
-        else if(user.getRole() == Role.EXPERT)
-        {
+        } else if (user.getRole() == Role.EXPERT) {
             grantedAuthorities.add(new SimpleGrantedAuthority(Role.EXPERT.toString()));
         }
 
         grantedAuthorities.add(new SimpleGrantedAuthority(Role.USER.toString()));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                grantedAuthorities);
     }
 }

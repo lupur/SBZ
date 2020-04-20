@@ -5,7 +5,13 @@ import com.sbz.agro.model.User;
 
 public interface UserService {
 
-    void save(User user);
     User findByUsername(String username);
+
     void registerNewUser(UserRegistrationDto userDto);
+
+    String login(String username, String password);
+
+    boolean isUserLoggedIn(String token);
+
+    void logout(String token);
 }

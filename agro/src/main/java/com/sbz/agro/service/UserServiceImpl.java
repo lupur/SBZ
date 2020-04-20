@@ -1,7 +1,5 @@
 package com.sbz.agro.service;
 
-import java.util.HashSet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,28 +14,43 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private AuthService authService;
+
     @Override
     public void registerNewUser(UserRegistrationDto userDto) {
-        if(userDto==null) return;
+        if (userDto == null)
+            return;
 
         User newUser = new User();
         newUser.setRole(Role.USER);
         newUser.setUsername(userDto.getUsername());
-        newUser.setPassword(userDto.getPassword());
+        newUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userRepository.save(newUser);
     }
 
     @Override
-    public void save(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+    public String login(String username, String password) {
+        return authService.login(username, password);
+    }
+
+    @Override
+    public void logout(String token) {
+        authService.logout(token);
     }
 
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
+    @Override
+    public boolean isUserLoggedIn(String token) {
+        return authService.isLoggedIn(token);
+    }
+
 }
