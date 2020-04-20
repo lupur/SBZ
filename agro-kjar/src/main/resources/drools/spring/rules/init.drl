@@ -1,0 +1,10 @@
+package drools.spring.rules;
+
+import com.sbz.agro.model.User;
+
+rule "User found"
+    when
+        User()
+    then
+        System.out.println("There is a user!");
+end
