@@ -35,7 +35,9 @@ public class UserController {
     @SuppressWarnings("rawtypes")
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity registartion(@RequestBody UserRegistrationDto userDto, BindingResult bindingResult) {
-        userService.registerNewUser(userDto);
+        if (!userService.registerNewUser(userDto)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         String token = userService.login(userDto.getUsername(), userDto.getPassword());
 

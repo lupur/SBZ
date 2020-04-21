@@ -1,10 +1,7 @@
 package com.sbz.agro.service;
 
-import java.util.HashSet;
-
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,20 +26,23 @@ public class UserServiceImpl implements UserService {
     private AuthService authService;
 
     @Override
-    public void registerNewUser(UserRegistrationDto userDto) {
-    	
-        if(userDto==null && userRepository.findByUsername(userDto.getUsername())!=null) return;
+    public boolean registerNewUser(UserRegistrationDto userDto) {
+
+        if (userDto == null || userRepository.findByUsername(userDto.getUsername()) != null)
+            return false;
 
         User newUser = new User();
         newUser.setRole(Role.USER);
         newUser.setUsername(userDto.getUsername());
         newUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userRepository.save(newUser);
-        
+
         KieSession kieSession = kieContainer.newKieSession();
         kieSession.insert(newUser);
         kieSession.fireAllRules();
         kieSession.dispose();
+
+        return true;
     }
 
     @Override

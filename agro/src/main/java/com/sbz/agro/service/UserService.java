@@ -7,7 +7,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    void registerNewUser(UserRegistrationDto userDto);
+    boolean registerNewUser(UserRegistrationDto userDto);
 
     String login(String username, String password);
 
