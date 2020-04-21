@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.sbz.agro.enums.Role;
 import com.sbz.agro.model.User;
 import com.sbz.agro.repository.UserRepository;
 import com.sbz.agro.security.TokenUtil;
@@ -31,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (userDetails == null)
             return null;
+
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 userDetails, password, userDetails.getAuthorities());
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
@@ -50,8 +52,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean isLoggedIn(String token) {
-        String username = tokenUtil.getUsernameFromToken(token);
-        User u = userRepository.findByUsername(username);
+        User u = getUserFromToken(token);
         if (u != null && u.HasToken(token)) {
             return true;
         }
@@ -60,12 +61,75 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String token) {
-        String username = tokenUtil.getUsernameFromToken(token);
-        User u = userRepository.findByUsername(username);
+        User u = getUserFromToken(token);
         if (u != null) {
             u.RemoveToken(token);
             userRepository.save(u);
         }
     }
 
+    @Override
+    public boolean isAdmin(String token) {
+        User u = getUserFromToken(token);
+        if (u != null) {
+            if (u.getRole() == Role.ADMIN) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isExpert(String token) {
+        User u = getUserFromToken(token);
+        if (u != null) {
+            if (u.getRole() == Role.EXPERT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isUser(String token) {
+        User u = getUserFromToken(token);
+        if (u != null) {
+            if (u.getRole() == Role.USER) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean atLeastAdmin(String token) {
+        User u = getUserFromToken(token);
+        if (u != null) {
+            if (u.getRole() == Role.ADMIN) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean atLeastExpert(String token) {
+        User u = getUserFromToken(token);
+        if (u != null) {
+            if (u.getRole() == Role.ADMIN || u.getRole() == Role.EXPERT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean atLeastUser(String token) {
+        return isLoggedIn(token);
+    }
+
+    private User getUserFromToken(String token) {
+        String username = tokenUtil.getUsernameFromToken(token);
+        return userRepository.findByUsername(username);
+    }
 }

@@ -1,7 +1,5 @@
 package com.sbz.agro.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,7 @@ import com.sbz.agro.service.UserService;
 
 @RestController
 @RequestMapping("/users")
+@SuppressWarnings("rawtypes")
 public class UserController {
 
     @Autowired
@@ -32,7 +31,6 @@ public class UserController {
         return "registration";
     }
 
-    @SuppressWarnings("rawtypes")
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity registartion(@RequestBody UserRegistrationDto userDto, BindingResult bindingResult) {
         if (!userService.registerNewUser(userDto)) {
@@ -44,10 +42,8 @@ public class UserController {
         return ResponseEntity.ok().body(token);
     }
 
-    @SuppressWarnings("rawtypes")
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestBody UserLoginDto user) {
-
         String token = userService.login(user.getUsername(), user.getPassword());
         if (token != null) {
             return ResponseEntity.ok().body(token);
@@ -56,9 +52,8 @@ public class UserController {
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @GetMapping(value = "/logout")
-    public ResponseEntity logout(@RequestHeader("Token") String token, HttpServletRequest request) {
+    public ResponseEntity logout(@RequestHeader("Token") String token) {
         if (userService.isUserLoggedIn(token)) {
             userService.logout(token);
             return ResponseEntity.ok().build();
