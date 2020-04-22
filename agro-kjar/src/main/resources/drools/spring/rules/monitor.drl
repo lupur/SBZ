@@ -1,0 +1,32 @@
+package drools.spring.rules;
+
+import com.sbz.agro.event.DeviceEvent;
+
+declare BadStateDeviceEvent
+    @role(event)
+    deviceId: Long
+    value: Double
+end
+
+rule "More than 5 bad state reports in 1 minute from the same device"
+    when
+        $de1: DeviceEvent($deviceId: deviceId, $value:value<30.00)
+        Number(intValue >= 5) from accumulate(
+            $de2: DeviceEvent(
+                this != $de1, 
+                deviceId == $deviceId, 
+                value < 30.00,
+                this meets[1m] $de1
+            ),
+            count($de2)
+        )
+        not (BadStateDeviceEvent(deviceId == $deviceId))
+    then
+    	System.out.println("New bad state event reported for device: " + $deviceId);
+        insert(new BadStateDeviceEvent($deviceId, $value));
+end
+
+rule "New device event"
+	when $de1: DeviceEvent()
+	then System.out.println($de1);
+end
