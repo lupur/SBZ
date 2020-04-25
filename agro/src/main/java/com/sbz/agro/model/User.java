@@ -1,6 +1,7 @@
 package com.sbz.agro.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.ElementCollection;
@@ -8,12 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.sbz.agro.enums.Role;
 
 @Entity
-@Table(name = "agro_user")
+@Table(name = "agro_users")
 public class User {
 
     @Id
@@ -24,8 +26,21 @@ public class User {
     private Role role;
     @ElementCollection
     private Set<String> tokens = new HashSet<>();
+    @OneToMany(mappedBy="owner")
+    private List<Land> lands;
+    
+    public User() {
+    	
+    }
 
-    public Long getId() {
+    public User(String username, String password, Role role) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.role = role;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -61,7 +76,15 @@ public class User {
         return tokens;
     }
 
-    public void AddToken(String token) {
+    public List<Land> getLands() {
+		return lands;
+	}
+
+	public void setLands(List<Land> lands) {
+		this.lands = lands;
+	}
+
+	public void AddToken(String token) {
         for (String t : tokens) {
             if (t.equals(token))
                 return;
