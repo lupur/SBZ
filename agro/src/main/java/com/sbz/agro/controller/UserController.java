@@ -1,6 +1,7 @@
 package com.sbz.agro.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sbz.agro.dto.UserLoginDto;
 import com.sbz.agro.dto.UserRegistrationDto;
 import com.sbz.agro.model.User;
+import com.sbz.agro.service.AuthService;
 import com.sbz.agro.service.UserService;
 
 @RestController
@@ -24,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthService authService;
 
     @GetMapping(value = "/registration")
     public String registration(Model model) {
@@ -37,14 +42,15 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
 
-        String token = userService.login(userDto.getUsername(), userDto.getPassword());
+        UserLoginDto userLogin = new UserLoginDto(userDto.getUsername(), userDto.getPassword());
+        String token = userService.login(userLogin);
 
         return ResponseEntity.ok().body(token);
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestBody UserLoginDto user) {
-        String token = userService.login(user.getUsername(), user.getPassword());
+        String token = userService.login(user);
         if (token != null) {
             return ResponseEntity.ok().body(token);
         } else {
@@ -61,4 +67,14 @@ public class UserController {
             return ResponseEntity.badRequest().body("Not even singed in - you cannot sing out");
         }
     }
+
+    @GetMapping()
+    public ResponseEntity getAllUsers(@RequestHeader("Token") String token) {
+        if (!authService.isAdmin(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok().body(userService.getAllUsers());
+    }
+
 }
