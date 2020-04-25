@@ -80,17 +80,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean isExpert(String token) {
-        User u = getUserFromToken(token);
-        if (u != null) {
-            if (u.getRole() == Role.EXPERT) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean isUser(String token) {
         User u = getUserFromToken(token);
         if (u != null) {
@@ -113,17 +102,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean atLeastExpert(String token) {
-        User u = getUserFromToken(token);
-        if (u != null) {
-            if (u.getRole() == Role.ADMIN || u.getRole() == Role.EXPERT) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean atLeastUser(String token) {
         return isLoggedIn(token);
     }
@@ -132,4 +110,5 @@ public class AuthServiceImpl implements AuthService {
         String username = tokenUtil.getUsernameFromToken(token);
         return userRepository.findByUsername(username);
     }
+
 }

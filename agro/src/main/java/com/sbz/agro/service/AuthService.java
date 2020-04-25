@@ -10,13 +10,9 @@ public interface AuthService {
 
     boolean isAdmin(String token);
 
-    boolean isExpert(String token);
-
     boolean isUser(String token);
 
     boolean atLeastUser(String token);
-
-    boolean atLeastExpert(String token);
 
     boolean atLeastAdmin(String token);
 }
