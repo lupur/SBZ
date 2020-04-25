@@ -4,6 +4,11 @@ public class UserLoginDto {
     String username;
     String password;
 
+    public UserLoginDto(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }

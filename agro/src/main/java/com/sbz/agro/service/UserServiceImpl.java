@@ -1,11 +1,16 @@
 package com.sbz.agro.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.sbz.agro.dto.GetUserDto;
+import com.sbz.agro.dto.UserLoginDto;
 import com.sbz.agro.dto.UserRegistrationDto;
 import com.sbz.agro.enums.Role;
 import com.sbz.agro.model.User;
@@ -46,8 +51,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String username, String password) {
-        return authService.login(username, password);
+    public String login(UserLoginDto user) {
+        return authService.login(user.getUsername(), user.getPassword());
     }
 
     @Override
@@ -63,6 +68,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserLoggedIn(String token) {
         return authService.isLoggedIn(token);
+    }
+
+    @Override
+    public List<GetUserDto> getAllUsers() {
+        List<User> usersDb = userRepository.findAll();
+        List<GetUserDto> users = new ArrayList<GetUserDto>();
+        for (User u : usersDb) {
+            GetUserDto user = new GetUserDto();
+            user.setUsername(u.getUsername());
+            user.setRole(u.getRole());
+            users.add(user);
+        }
+
+        return users;
     }
 
 }
