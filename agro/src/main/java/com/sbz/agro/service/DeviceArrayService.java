@@ -10,11 +10,11 @@ public interface DeviceArrayService {
 
     boolean removeArray(Long arrayId);
 
+    boolean arrayExists(Long arrayId);
+
     DeviceArray getDeviceArray(Long arrayId);
 
     List<DeviceArray> getFieldArrays(Long fieldId);
-
-    boolean arrayExists(Long arrayId);
 
     DeviceArray getArrayOfField(Long fieldId, Long arrayId);
 }
