@@ -23,8 +23,8 @@ public class DeviceArray {
 	@OneToMany(mappedBy="array")
 	private List<Device> devices;
 	@ManyToOne
-    @JoinColumn(name="land_id", nullable=false)
-	private Field land;
+    @JoinColumn(name="field_id", nullable=false)
+	private Field field;
 	
 	public DeviceArray() {
 		
@@ -46,12 +46,12 @@ public class DeviceArray {
 		this.devices = devices;
 	}
 
-	public Field getLand() {
-		return land;
+	public Field getField() {
+		return field;
 	}
 
-	public void setLand(Field land) {
-		this.land = land;
+	public void setField(Field field) {
+		this.field = field;
 	}
 
 }

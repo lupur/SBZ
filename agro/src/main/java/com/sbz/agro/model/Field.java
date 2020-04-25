@@ -13,16 +13,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="lands")
+@Table(name="fields")
 public class Field {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="land_id")
+	@Column(name="field_id")
 	private Long id;
-	@Column(name="land_name")
+	@Column(name="field_name")
 	private String name;
-	@Column(name="land_area")
+	@Column(name="field_area")
 	private Double area;
 	@ManyToOne
     @JoinColumn(name="user_id", nullable=false)
@@ -30,7 +30,7 @@ public class Field {
 	@ManyToOne
     @JoinColumn(name="crop_id", nullable=false)
 	private Crop crop;
-	@OneToMany(mappedBy="land")
+	@OneToMany(mappedBy="field")
 	private List<DeviceArray> deviceArrays;
 	
 	public Field() {
