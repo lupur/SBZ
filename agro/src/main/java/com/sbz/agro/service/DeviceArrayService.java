@@ -8,7 +8,7 @@ public interface DeviceArrayService {
 
     boolean addArray(Long fieldId);
 
-    boolean removeArray(Long fieldId);
+    boolean removeArray(Long arrayId);
 
     DeviceArray getDeviceArray(Long arrayId);
 

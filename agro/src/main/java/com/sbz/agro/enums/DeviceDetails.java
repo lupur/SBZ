@@ -24,4 +24,5 @@ public enum DeviceDetails {
 	public DeviceReadingTypes[] getReadingTypes() {
 		return readingsTypes;
 	}
+	
 }

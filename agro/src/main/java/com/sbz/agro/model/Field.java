@@ -55,6 +55,10 @@ public class Field {
 	public void setDeviceArrays(List<DeviceArray> deviceArrays) {
 		this.deviceArrays = deviceArrays;
 	}
+	
+	public void addDeviceArray(DeviceArray deviceArray) {
+		this.deviceArrays.add(deviceArray);
+	}
 
 	public Double getArea() {
 		return area;
