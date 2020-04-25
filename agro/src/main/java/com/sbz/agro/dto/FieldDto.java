@@ -6,6 +6,7 @@ public class FieldDto {
     private String name;
     private Double area;
     private Long ownerId;
+    private Long cropId;
 
     public Long getId() {
         return id;
@@ -37,6 +38,14 @@ public class FieldDto {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Long getCropId() {
+        return cropId;
+    }
+
+    public void setCropId(Long cropId) {
+        this.cropId = cropId;
     }
 
 }
