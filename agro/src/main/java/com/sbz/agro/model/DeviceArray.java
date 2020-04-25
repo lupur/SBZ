@@ -24,7 +24,7 @@ public class DeviceArray {
 	private List<Device> devices;
 	@ManyToOne
     @JoinColumn(name="land_id", nullable=false)
-	private Land land;
+	private Field land;
 	
 	public DeviceArray() {
 		
@@ -46,11 +46,11 @@ public class DeviceArray {
 		this.devices = devices;
 	}
 
-	public Land getLand() {
+	public Field getLand() {
 		return land;
 	}
 
-	public void setLand(Land land) {
+	public void setLand(Field land) {
 		this.land = land;
 	}
 

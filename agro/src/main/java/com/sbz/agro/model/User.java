@@ -27,7 +27,7 @@ public class User {
     @ElementCollection
     private Set<String> tokens = new HashSet<>();
     @OneToMany(mappedBy="owner")
-    private List<Land> lands;
+    private List<Field> lands;
     
     public User() {
     	
@@ -76,11 +76,11 @@ public class User {
         return tokens;
     }
 
-    public List<Land> getLands() {
+    public List<Field> getLands() {
 		return lands;
 	}
 
-	public void setLands(List<Land> lands) {
+	public void setLands(List<Field> lands) {
 		this.lands = lands;
 	}
 
