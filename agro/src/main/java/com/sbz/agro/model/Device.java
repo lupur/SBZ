@@ -9,67 +9,68 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.sbz.agro.enums.DeviceDetails;
+
 @Entity
-@Table(name="devices")
+@Table(name = "devices")
 public class Device {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="device_id")
-	private Long id;
-	@Column(name="device_serial_no")
-	private String serialNo;
-	@ManyToOne
-	@JoinColumn(name="device_type_id", nullable=false)
-	private DeviceType type;
-	@ManyToOne
-	@JoinColumn(name="device_array_id", nullable=false)
-	private DeviceArray array;
-	@Column(name="position")
-	private Integer position;
-	
-	public Device() {
-		
-	}
 
-	public Long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "device_id")
+    private Long id;
+    @Column(name = "device_serial_no")
+    private String serialNo;
+    @Column(name = "device_type_id", nullable = false)
+    private DeviceDetails type;
+    @ManyToOne
+    @JoinColumn(name = "device_array_id", nullable = false)
+    private DeviceArray array;
+    @Column(name = "position")
+    private Integer position;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Device() {
 
-	public String getSerialNo() {
-		return serialNo;
-	}
+    }
 
-	public void setSerialNo(String serialNo) {
-		this.serialNo = serialNo;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public DeviceType getType() {
-		return type;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setType(DeviceType type) {
-		this.type = type;
-	}
+    public String getSerialNo() {
+        return serialNo;
+    }
 
-	public DeviceArray getArray() {
-		return array;
-	}
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
 
-	public void setArray(DeviceArray array) {
-		this.array = array;
-	}
+    public DeviceDetails getType() {
+        return type;
+    }
 
-	public Integer getPosition() {
-		return position;
-	}
+    public void setType(DeviceDetails type) {
+        this.type = type;
+    }
 
-	public void setPosition(Integer position) {
-		this.position = position;
-	}
+    public DeviceArray getArray() {
+        return array;
+    }
+
+    public void setArray(DeviceArray array) {
+        this.array = array;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
 
 }

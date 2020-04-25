@@ -13,4 +13,8 @@ public interface DeviceArrayService {
     DeviceArray getDeviceArray(Long arrayId);
 
     List<DeviceArray> getFieldArrays(Long fieldId);
+
+    boolean arrayExists(Long arrayId);
+
+    DeviceArray getArrayOfField(Long fieldId, Long arrayId);
 }

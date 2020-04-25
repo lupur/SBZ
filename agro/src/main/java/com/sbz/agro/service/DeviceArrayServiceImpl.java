@@ -33,4 +33,16 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
         return null;
     }
 
+    @Override
+    public boolean arrayExists(Long arrayId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public DeviceArray getArrayOfField(Long fieldId, Long deviceId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
