@@ -16,18 +16,19 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
 
     @Override
     public boolean addArray(Long fieldId) {
-    	Field field = fieldRepository.findById(fieldId).get();
     	
-        if(field == null)
-        	return false;
-        
-        DeviceArray dArray = new DeviceArray();
-        dArray.setField(field);
-        field.addDeviceArray(dArray);
-        
-        fieldRepository.save(field);
-        
-        return true;
+    	try {
+    		Field field = fieldRepository.findById(fieldId).get();
+    		DeviceArray dArray = new DeviceArray();
+            dArray.setField(field);
+            field.addDeviceArray(dArray);
+            fieldRepository.save(field);
+            
+            return true;
+    	}
+    	catch (Exception e) {
+    		return false;
+    	}
     }
 
     @Override
@@ -62,8 +63,19 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
 
     @Override
     public List<DeviceArray> getFieldArrays(Long fieldId) {
-
-        return fieldRepository.findById(fieldId).get().getDeviceArrays();
+    	try {
+    		return fieldRepository.findById(fieldId).get().getDeviceArrays();
+        } catch (Exception e) {
+            return null;
+        }
     }
+
+	@Override
+	public boolean arrayExists(Long arrayId) {
+		if (this.getDeviceArray(arrayId) == null)
+			return false;
+		
+		return true;
+	}
 
 }

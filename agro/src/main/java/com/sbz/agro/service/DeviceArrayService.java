@@ -9,6 +9,8 @@ public interface DeviceArrayService {
     boolean addArray(Long fieldId);
 
     boolean removeArray(Long arrayId);
+    
+    boolean arrayExists(Long arrayId);
 
     DeviceArray getDeviceArray(Long arrayId);
 
