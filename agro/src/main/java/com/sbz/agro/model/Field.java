@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="lands")
-public class Land {
+public class Field {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class Land {
 	@OneToMany(mappedBy="land")
 	private List<DeviceArray> deviceArrays;
 	
-	public Land() {
+	public Field() {
 		
 	}
 
