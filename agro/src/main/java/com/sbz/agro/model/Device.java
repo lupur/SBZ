@@ -31,6 +31,13 @@ public class Device {
 	public Device() {
 		
 	}
+	
+	public Device(String serialNo, DeviceType type, DeviceArray array, Integer position) {
+		this.serialNo = serialNo;
+		this.type = type;
+		this.array = array;
+		this.position = position;
+	}
 
 	public Long getId() {
 		return id;
