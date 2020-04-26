@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sbz.agro.dto.DeviceDto;
+import com.sbz.agro.enums.DeviceDetails;
 import com.sbz.agro.security.TokenUtil;
 import com.sbz.agro.service.AuthService;
 import com.sbz.agro.service.DeviceArrayService;
@@ -102,6 +103,13 @@ public class DeviceController {
         if (!arrayService.arrayExists(newDevice.getArrayId())) {
             return ResponseEntity.notFound().build();
         }
+
+        if (newDevice.getType() == DeviceDetails.PUMP && newDevice.getPosition() != 0) {
+            return ResponseEntity.badRequest().body("Pump position must be 0");
+        } else if (newDevice.getType() != DeviceDetails.PUMP && newDevice.getPosition() == 0) {
+            return ResponseEntity.badRequest().body("Only Pump position can be 0");
+        }
+
         if (!deviceService.isPositionAvailable(newDevice.getArrayId(), newDevice.getPosition(), newDevice.getType())) {
             return ResponseEntity.badRequest().body("Position not available");
         }
