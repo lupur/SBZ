@@ -51,7 +51,7 @@ public class DeviceArrayController {
         return ResponseEntity.ok().body(arrayService.getFieldArrays(fieldId));
     }
 
-    @GetMapping(value = "{arrayId}")
+    @GetMapping(value = "/{arrayId}")
     public ResponseEntity getArray(@RequestHeader("Token") String token, @PathVariable Long fieldId,
             @PathVariable Long arrayId) {
         if (!authService.atLeastUser(token)) {
