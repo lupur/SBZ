@@ -1,12 +1,15 @@
 package com.sbz.agro.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sbz.agro.dto.DeviceArrayDto;
 import com.sbz.agro.model.DeviceArray;
 import com.sbz.agro.model.Field;
+import com.sbz.agro.repository.DeviceArrayRepository;
 import com.sbz.agro.repository.FieldRepository;
 
 @Service
@@ -15,6 +18,9 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
     @Autowired
     FieldRepository fieldRepository;
 
+    @Autowired
+    DeviceArrayRepository arrayRepository;
+
     @Override
     public boolean addArray(Long fieldId) {
 
@@ -22,8 +28,7 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
             Field field = fieldRepository.findById(fieldId).get();
             DeviceArray dArray = new DeviceArray();
             dArray.setField(field);
-            field.addDeviceArray(dArray);
-            fieldRepository.save(field);
+            arrayRepository.save(dArray);
 
             return true;
         } catch (Exception e) {
@@ -33,28 +38,21 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
 
     @Override
     public boolean removeArray(Long arrayId) {
-
-        for (Field f : fieldRepository.findAll()) {
-            for (DeviceArray da : f.getDeviceArrays()) {
-                if (da.getId() == arrayId) {
-                    f.getDeviceArrays().remove(da);
-                    fieldRepository.save(f);
-                    return true;
-                }
+        for (DeviceArray d : arrayRepository.findAll()) {
+            if (d.getId() == arrayId) {
+                arrayRepository.delete(d);
+                return true;
             }
         }
-
         return false;
     }
 
     @Override
-    public DeviceArray getDeviceArray(Long arrayId) {
+    public DeviceArrayDto getDeviceArray(Long arrayId) {
 
-        for (Field f : fieldRepository.findAll()) {
-            for (DeviceArray da : f.getDeviceArrays()) {
-                if (da.getId() == arrayId) {
-                    return da;
-                }
+        for (DeviceArray da : arrayRepository.findAll()) {
+            if (da.getId() == arrayId) {
+                return new DeviceArrayDto(da);
             }
         }
 
@@ -62,9 +60,17 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
     }
 
     @Override
-    public List<DeviceArray> getFieldArrays(Long fieldId) {
+    public List<DeviceArrayDto> getFieldArrays(Long fieldId) {
         try {
-            return fieldRepository.findById(fieldId).get().getDeviceArrays();
+            List<DeviceArray> devices = fieldRepository.findById(fieldId).get().getDeviceArrays();
+            List<DeviceArrayDto> devicesDto = new ArrayList<>();
+
+            for (DeviceArray da : devices) {
+                DeviceArrayDto daDto = new DeviceArrayDto(da);
+                devicesDto.add(daDto);
+            }
+
+            return devicesDto;
         } catch (Exception e) {
             return null;
         }
@@ -79,8 +85,18 @@ public class DeviceArrayServiceImpl implements DeviceArrayService {
     }
 
     @Override
-    public DeviceArray getArrayOfField(Long fieldId, Long deviceId) {
-        // TODO Auto-generated method stub
+    public DeviceArrayDto getArrayOfField(Long fieldId, Long deviceId) {
+        try {
+            Field f = fieldRepository.findById(fieldId).get();
+            for (DeviceArray da : f.getDeviceArrays()) {
+                if (da.getId() == deviceId) {
+                    return new DeviceArrayDto(da);
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
         return null;
     }
 }

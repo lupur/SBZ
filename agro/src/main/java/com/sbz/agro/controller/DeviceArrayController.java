@@ -18,6 +18,7 @@ import com.sbz.agro.service.FieldService;
 
 @RestController
 @RequestMapping("fields/{fieldId}/arrays")
+@SuppressWarnings("rawtypes")
 public class DeviceArrayController {
 
     @Autowired
@@ -57,7 +58,7 @@ public class DeviceArrayController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        if (!arrayService.arrayExists(fieldId)) {
+        if (!arrayService.arrayExists(arrayId)) {
             return ResponseEntity.notFound().build();
         }
 

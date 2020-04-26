@@ -13,45 +13,45 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="device_arrays")
+@Table(name = "device_arrays")
 public class DeviceArray {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="device_array_id")
-	private Long id;
-	@OneToMany(mappedBy="array")
-	private List<Device> devices;
-	@ManyToOne
-    @JoinColumn(name="field_id", nullable=false)
-	private Field field;
-	
-	public DeviceArray() {
-		
-	}
 
-	public Long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "device_array_id")
+    private Long id;
+    @OneToMany(mappedBy = "array")
+    private List<Device> devices;
+    @ManyToOne
+    @JoinColumn(name = "field_id", nullable = false)
+    private Field field;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public DeviceArray() {
 
-	public List<Device> getDevices() {
-		return devices;
-	}
+    }
 
-	public void setDevices(List<Device> devices) {
-		this.devices = devices;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Field getField() {
-		return field;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setField(Field field) {
-		this.field = field;
-	}
+    public List<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<Device> devices) {
+        this.devices = devices;
+    }
+
+    public Field getField() {
+        return field;
+    }
+
+    public void setField(Field field) {
+        this.field = field;
+    }
 
 }
