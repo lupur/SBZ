@@ -1,5 +1,7 @@
 package com.sbz.agro.dto;
 
+import com.sbz.agro.model.Field;
+
 public class FieldDto {
 
     private Long id;
@@ -7,6 +9,18 @@ public class FieldDto {
     private Double area;
     private Long ownerId;
     private Long cropId;
+    
+    public FieldDto(){
+    	super();
+    }
+    
+    public FieldDto(Field field){
+    	this.id = field.getId();
+    	this.name = field.getName();
+    	this.area = field.getArea();
+    	this.ownerId = field.getOwner().getId();
+    	this.cropId = field.getCrop().getId();
+    }
 
     public Long getId() {
         return id;
