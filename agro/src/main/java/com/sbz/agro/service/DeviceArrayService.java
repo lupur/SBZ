@@ -17,4 +17,5 @@ public interface DeviceArrayService {
     List<DeviceArrayDto> getFieldArrays(Long fieldId);
 
     DeviceArrayDto getArrayOfField(Long fieldId, Long arrayId);
+
 }

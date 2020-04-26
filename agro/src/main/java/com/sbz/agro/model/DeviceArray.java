@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,7 +21,7 @@ public class DeviceArray {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "device_array_id")
     private Long id;
-    @OneToMany(mappedBy = "array")
+    @OneToMany(mappedBy = "array", fetch = FetchType.EAGER)
     private List<Device> devices;
     @ManyToOne
     @JoinColumn(name = "field_id", nullable = false)
