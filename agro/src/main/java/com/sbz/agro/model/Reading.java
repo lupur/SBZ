@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "device_readings")
@@ -28,7 +29,8 @@ public class Reading {
     @Column(name = "device_reading_type")
     private String type;
     
-    @Column(name = "device_reading_value")
+//    @Column(name = "device_reading_value")
+    @Transient
     private Object value;
 
     @Column(name = "device_reading_ts")
