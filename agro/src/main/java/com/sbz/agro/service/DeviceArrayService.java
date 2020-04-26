@@ -2,15 +2,19 @@ package com.sbz.agro.service;
 
 import java.util.List;
 
-import com.sbz.agro.model.DeviceArray;
+import com.sbz.agro.dto.DeviceArrayDto;
 
 public interface DeviceArrayService {
 
     boolean addArray(Long fieldId);
 
-    boolean removeArray(Long fieldId);
+    boolean removeArray(Long arrayId);
 
-    DeviceArray getDeviceArray(Long arrayId);
+    boolean arrayExists(Long arrayId);
 
-    List<DeviceArray> getFieldArrays(Long fieldId);
+    DeviceArrayDto getDeviceArray(Long arrayId);
+
+    List<DeviceArrayDto> getFieldArrays(Long fieldId);
+
+    DeviceArrayDto getArrayOfField(Long fieldId, Long arrayId);
 }

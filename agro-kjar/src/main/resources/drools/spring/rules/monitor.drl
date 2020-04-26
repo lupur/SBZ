@@ -1,6 +1,12 @@
 package drools.spring.rules;
 
 import com.sbz.agro.event.DeviceEvent;
+import com.sbz.agro.model.Reading;
+import com.sbz.agro.model.Device;
+import com.sbz.agro.enums.DeviceReadingTypes;
+import com.sbz.agro.enums.DeviceDetails;
+import com.sbz.agro.model.Field;
+import com.sbz.agro.model.DeviceArray;
 
 declare BadStateDeviceEvent
     @role(event)
@@ -25,6 +31,53 @@ rule "More than 5 bad state reports in 1 minute from the same device"
     	System.out.println("New bad state event reported for device: " + $deviceId);
         insert(new BadStateDeviceEvent($deviceId, $value));
 end
+
+rule "Moisture reading entry - Paired valve exists"
+	when 
+		Reading($name: name == DeviceReadingTypes.MOISTURE.name, $device: device)
+		Device(this != $device, position == $device.position, type == DeviceDetails.VALVE, $serialNoValve: serialNo, array.id == $device.array.id)
+	then
+		System.out.println("New moisture reading for sensor: " + $device.getSerialNo());
+		System.out.println("Paired valve: " + $serialNoValve);
+end
+
+rule "Moisture reading entry - No paired valve"
+	when 
+		Reading($name: name == DeviceReadingTypes.MOISTURE.name, $device: device)
+		not(Device(this != $device, position == $device.position, type == DeviceDetails.VALVE, array.id == $device.array.id))
+	then
+		System.out.println("New moisture reading for sensor: " + $device.getSerialNo());
+		System.out.println("No paired valve!");
+end
+
+rule "Moisture reading entry - Under lower threshold"
+	when 
+		Reading($name: name == DeviceReadingTypes.MOISTURE.name, $device: device, $value: value)
+		Device(id == $device.id, $array: array)
+		DeviceArray(id == $array.id, $field: field)
+		Field(id == $field.id, $moistureUpperThreshold: moistureLowerThreshold > $value)
+	then
+		System.out.println("New lower critical moisture reading for sensor: " + $device.getSerialNo() + " Value: " + $value + " Min value: " + $moistureUpperThreshold);
+end
+
+rule "Moisture reading entry - Above upper threshold"
+	when 
+		Reading($name: name == DeviceReadingTypes.MOISTURE.name, $device: device, $value: value)
+		Device(id == $device.id, $array: array)
+		DeviceArray(id == $array.id, $field: field)
+		Field(id == $field.id, $moistureUpperThreshold: moistureUpperThreshold < $value)
+	then
+		System.out.println("New upper critical moisture reading for sensor: " + $device.getSerialNo() + " Value: " + $value + " Max value: " + $moistureUpperThreshold);
+end
+
+/*
+rule "Device error report"
+	when 
+		
+	then
+
+end
+*/
 
 rule "New device event"
 	when $de1: DeviceEvent()
