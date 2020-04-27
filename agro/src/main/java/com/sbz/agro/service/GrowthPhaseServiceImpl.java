@@ -1,9 +1,10 @@
 package com.sbz.agro.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.sbz.agro.dto.GrowthPhaseDto;
 import com.sbz.agro.model.Crop;
@@ -11,6 +12,7 @@ import com.sbz.agro.model.GrowthPhase;
 import com.sbz.agro.repository.CropRepository;
 import com.sbz.agro.repository.GrowthPhaseRepository;
 
+@Service
 public class GrowthPhaseServiceImpl implements GrowthPhaseService {
 
 	@Autowired
@@ -20,10 +22,10 @@ public class GrowthPhaseServiceImpl implements GrowthPhaseService {
 	CropRepository cropRepository;
 
 	@Override
-	public List<GrowthPhaseDto> getAllCropGrowthPhases(Long cropId) {
+	public Set<GrowthPhaseDto> getAllCropGrowthPhases(Long cropId) {
 		try {
-			List<GrowthPhase> growthPhases = cropRepository.findById(cropId).get().getGrowthPhases();
-			List<GrowthPhaseDto> growthPhasesDto = new ArrayList<>();
+			Set<GrowthPhase> growthPhases = cropRepository.findById(cropId).get().getGrowthPhases();
+			Set<GrowthPhaseDto> growthPhasesDto = new HashSet<>();
 
 			for (GrowthPhase gp : growthPhases) {
 				GrowthPhaseDto gpDto = new GrowthPhaseDto(gp);

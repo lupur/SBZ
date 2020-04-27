@@ -1,6 +1,6 @@
 package com.sbz.agro.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,36 +15,36 @@ import javax.persistence.Table;
 @Table(name = "crops")
 public class Crop {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="crop_id")
-    private Long id;
-    @Column(name="crop_name")
-    private String name;
-    @OneToMany(mappedBy = "crop", fetch = FetchType.EAGER)
-    private List<GrowthPhase> growthPhases;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "crop_id")
+	private Long id;
+	@Column(name = "crop_name")
+	private String name;
+	@OneToMany(mappedBy = "crop", fetch = FetchType.EAGER)
+	private Set<GrowthPhase> growthPhases;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-	public List<GrowthPhase> getGrowthPhases() {
+	public Set<GrowthPhase> getGrowthPhases() {
 		return growthPhases;
 	}
 
-	public void setGrowthPhases(List<GrowthPhase> growthPhases) {
+	public void setGrowthPhases(Set<GrowthPhase> growthPhases) {
 		this.growthPhases = growthPhases;
 	}
 }
