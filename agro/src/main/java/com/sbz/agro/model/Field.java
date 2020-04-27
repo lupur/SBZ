@@ -1,6 +1,7 @@
 package com.sbz.agro.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -34,10 +35,12 @@ public class Field {
     private Crop crop;
     @OneToMany(mappedBy = "field", fetch = FetchType.EAGER)
     private List<DeviceArray> deviceArrays;
-    @Column(name="moisture_max")
+    @Column(name = "moisture_max")
     private Double moistureUpperThreshold;
-    @Column(name="moisture_min")
+    @Column(name = "moisture_min")
     private Double moistureLowerThreshold;
+    @Column(name = "seeding_date")
+    private Date seedingDate;
 
     public Field() {
 
@@ -68,7 +71,8 @@ public class Field {
     }
 
     public void addDeviceArray(DeviceArray deviceArray) {
-    	if(this.deviceArrays == null) this.deviceArrays = new ArrayList<>();
+        if (this.deviceArrays == null)
+            this.deviceArrays = new ArrayList<>();
         this.deviceArrays.add(deviceArray);
     }
 
@@ -96,22 +100,28 @@ public class Field {
         this.crop = crop;
     }
 
-	public Double getMoistureUpperThreshold() {
-		return moistureUpperThreshold;
-	}
+    public Double getMoistureUpperThreshold() {
+        return moistureUpperThreshold;
+    }
 
-	public void setMoistureUpperThreshold(Double moistureUpperThreshold) {
-		this.moistureUpperThreshold = moistureUpperThreshold;
-	}
+    public void setMoistureUpperThreshold(Double moistureUpperThreshold) {
+        this.moistureUpperThreshold = moistureUpperThreshold;
+    }
 
-	public Double getMoistureLowerThreshold() {
-		return moistureLowerThreshold;
-	}
+    public Double getMoistureLowerThreshold() {
+        return moistureLowerThreshold;
+    }
 
-	public void setMoistureLowerThreshold(Double moistureLowerThreshold) {
-		this.moistureLowerThreshold = moistureLowerThreshold;
-	}
-    
-    
+    public void setMoistureLowerThreshold(Double moistureLowerThreshold) {
+        this.moistureLowerThreshold = moistureLowerThreshold;
+    }
+
+    public Date getSeedingDate() {
+        return seedingDate;
+    }
+
+    public void setSeedingDate(Date seedingDate) {
+        this.seedingDate = seedingDate;
+    }
 
 }

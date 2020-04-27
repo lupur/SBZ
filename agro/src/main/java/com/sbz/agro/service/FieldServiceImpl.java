@@ -54,12 +54,7 @@ public class FieldServiceImpl implements FieldService {
     public FieldDto getField(Long fieldId) {
         try {
             Field f = fieldRepository.findById(fieldId).get();
-            FieldDto field = new FieldDto();
-            field.setArea(f.getArea());
-            field.setId(f.getId());
-            field.setName(f.getName());
-            field.setOwnerId(f.getOwner().getId());
-            field.setCropId(f.getCrop().getId());
+            FieldDto field = new FieldDto(f);
             return field;
         } catch (NoSuchElementException e) {
             return null;
@@ -79,6 +74,7 @@ public class FieldServiceImpl implements FieldService {
             f.setName(newField.getName());
             f.setOwner(owner);
             f.setCrop(crop);
+            f.setSeedingDate(newField.getSeedingDate());
             fieldRepository.save(f);
 
             return true;
@@ -126,12 +122,8 @@ public class FieldServiceImpl implements FieldService {
             return;
 
         for (Field f : fieldsDb) {
-            FieldDto field = new FieldDto();
-            field.setId(f.getId());
-            field.setArea(f.getArea());
-            field.setName(f.getName());
-            field.setOwnerId(f.getOwner().getId());
-            field.setCropId(f.getCrop().getId());
+            FieldDto field = new FieldDto(f);
+
             fieldsDto.add(field);
         }
 

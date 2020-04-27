@@ -1,5 +1,7 @@
 package com.sbz.agro.dto;
 
+import java.util.Date;
+
 import com.sbz.agro.model.Field;
 
 public class FieldDto {
@@ -9,17 +11,19 @@ public class FieldDto {
     private Double area;
     private Long ownerId;
     private Long cropId;
-    
-    public FieldDto(){
-    	super();
+    private Date seedingDate;
+
+    public FieldDto() {
+        super();
     }
-    
-    public FieldDto(Field field){
-    	this.id = field.getId();
-    	this.name = field.getName();
-    	this.area = field.getArea();
-    	this.ownerId = field.getOwner().getId();
-    	this.cropId = field.getCrop().getId();
+
+    public FieldDto(Field field) {
+        this.id = field.getId();
+        this.name = field.getName();
+        this.area = field.getArea();
+        this.ownerId = field.getOwner().getId();
+        this.cropId = field.getCrop().getId();
+        this.seedingDate = field.getSeedingDate();
     }
 
     public Long getId() {
@@ -60,6 +64,14 @@ public class FieldDto {
 
     public void setCropId(Long cropId) {
         this.cropId = cropId;
+    }
+
+    public Date getSeedingDate() {
+        return seedingDate;
+    }
+
+    public void setSeedingDate(Date seedingDate) {
+        this.seedingDate = seedingDate;
     }
 
 }

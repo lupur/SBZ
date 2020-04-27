@@ -3,8 +3,6 @@ package com.sbz.agro.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private KieContainer kieContainer;
+//    @Autowired
+//    private KieContainer kieContainer;
 
     @Autowired
     private AuthService authService;
@@ -42,10 +40,10 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userRepository.save(newUser);
 
-        KieSession kieSession = kieContainer.newKieSession();
-        kieSession.insert(newUser);
-        kieSession.fireAllRules();
-        kieSession.dispose();
+//        KieSession kieSession = kieContainer.newKieSession();
+//        kieSession.insert(newUser);
+//        kieSession.fireAllRules();
+//        kieSession.dispose();
 
         return true;
     }
