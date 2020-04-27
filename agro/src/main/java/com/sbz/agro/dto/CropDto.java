@@ -1,10 +1,14 @@
 package com.sbz.agro.dto;
 
+import java.util.List;
+
 import com.sbz.agro.model.Crop;
+import com.sbz.agro.model.GrowthPhase;
 
 public class CropDto {
     private Long id;
     private String name;
+    private List<GrowthPhase> growthPhases;
     
     public CropDto(){
     	super();
@@ -13,6 +17,7 @@ public class CropDto {
     public CropDto(Crop crop){
     	this.id = crop.getId();
     	this.name = crop.getName();
+    	this.growthPhases = crop.getGrowthPhases();
     }
 
     public Long getId() {
@@ -30,4 +35,12 @@ public class CropDto {
     public void setName(String name) {
         this.name = name;
     }
+
+	public List<GrowthPhase> getGrowthPhases() {
+		return growthPhases;
+	}
+
+	public void setGrowthPhases(List<GrowthPhase> growthPhases) {
+		this.growthPhases = growthPhases;
+	}
 }

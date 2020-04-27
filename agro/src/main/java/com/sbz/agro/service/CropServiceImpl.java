@@ -60,6 +60,7 @@ public class CropServiceImpl implements CropService {
         CropDto cDto = new CropDto();
         cDto.setId(c.getId());
         cDto.setName(c.getName());
+        cDto.setGrowthPhases(c.getGrowthPhases());
 
         return cDto;
     }
@@ -77,6 +78,7 @@ public class CropServiceImpl implements CropService {
             CropDto cDtop = new CropDto();
             cDtop.setId(c.getId());
             cDtop.setName(c.getName());
+            cDtop.setGrowthPhases(c.getGrowthPhases());
             cropsDto.add(cDtop);
         }
         return cropsDto;
