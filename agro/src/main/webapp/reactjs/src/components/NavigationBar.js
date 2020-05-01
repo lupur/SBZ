@@ -2,9 +2,36 @@ import React from 'react';
 
 import {Navbar, Nav} from 'react-bootstrap';
 import {Link} from 'react-router-dom'
-import {logout, isLoggedIn} from "./Utils.js"
+import {authService} from '../services/authService'
+import {Role} from '../helpers/role'
+import {history} from '../helpers/history'
 
 class NavigationBar extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            currentUser: null,
+            isAdmin: false
+        };
+
+        this.marginTop = {
+            marginTop:"20px"
+            }
+    }
+
+    componentDidMount() {
+        authService.currentUser.subscribe(x => this.setState({
+            currentUser: x,
+            isAdmin: x && x.role === Role.Admin
+        }))
+    }
+
+    logout() {
+        authService.logout();
+        history.push('/login');
+    }
 
     render() {
 
@@ -13,12 +40,13 @@ class NavigationBar extends React.Component {
                 <Link to={""} className="navbar-brand">
                     Agro 2020
                 </Link>
+               
                <Nav className="mr-auto">
-                   <Link to={"users"} ref={this.users} className="nav-link">Users</Link>
-                   <Link to={"crops"} ref={this.crops} className="nav-link">Crops</Link>
-                   <Link to={"login"} ref={this.login} className="nav-link">Login</Link>
-                   <Link to={"login"} ref={this.logout} className="nav-link" onClick={logout}>Logout</Link>
-               </Nav>
+                   { this.state.isAdmin ? <Link to={"users"} className="nav-link">Users</Link> : null}
+                   { this.state.isAdmin ?<Link to={"crops"} className="nav-link">Crops</Link> : null}
+                   <Link to={"login"} className="nav-link" onClick={this.logout}>Logout</Link>
+                </Nav>
+                
            </Navbar>
        );
     }

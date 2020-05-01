@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sbz.agro.dto.LoginResponseDto;
 import com.sbz.agro.dto.UserLoginDto;
 import com.sbz.agro.dto.UserRegistrationDto;
 import com.sbz.agro.model.User;
@@ -47,14 +48,21 @@ public class UserController {
         UserLoginDto userLogin = new UserLoginDto(userDto.getUsername(), userDto.getPassword());
         String token = userService.login(userLogin);
 
-        return ResponseEntity.ok().body(token);
+        LoginResponseDto userResponse = new LoginResponseDto();
+		userResponse.setToken(token);
+		userResponse.setRole("User");
+        return ResponseEntity.ok().body(userResponse);
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestBody UserLoginDto user) {
         String token = userService.login(user);
         if (token != null) {
-            return ResponseEntity.ok().body(token);
+			LoginResponseDto userResponse = new LoginResponseDto();
+			userResponse.setToken(token);
+			if(authService.isAdmin(token)) userResponse.setRole("Admin");
+			else userResponse.setRole("User");
+            return ResponseEntity.ok().body(userResponse);
         } else {
             return ResponseEntity.badRequest().body("Wrong credentials");
         }
