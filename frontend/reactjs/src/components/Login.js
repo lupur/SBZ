@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Card, Form, Button, Col} from 'react-bootstrap'
-import axios from 'axios';
+import {authService} from '../services/authService'
 
 export default class Login extends Component {
 
@@ -9,32 +9,24 @@ export default class Login extends Component {
         this.state = {username:'', password:''};
         this.submitLogin = this.submitLogin.bind(this);
         this.loginChange = this.loginChange.bind(this);
-    }
 
-    componentDidMount() {
-        // ovo je dobro koristiti za komponente koje se popunjavaju podacima
+        if (authService.currentUserValue) { 
+            this.props.history.push('/');
+        }
     }
 
     submitLogin(event) {
-        axios.interceptors.request.use(request => {
-            console.log('Starting Request', request)
-            return request
-          })
         event.preventDefault();
-
-        axios.post("http://localhost:8080/users/login", 
-            {
-                username : this.state.username,
-                password : this.state.password
-            }
-            ).then( response => {
-                var token = response.data
-                localStorage.setItem('token', token)
-            }).catch(error => 
-                {
-                    alert(error.response.data);
-                })
-          
+        authService.login(this.state.username, this.state.password)
+            .then(
+                user => {
+                    const { from } = this.props.location.state || { from: { pathname: "/" } };
+                    this.props.history.push(from);
+                },
+                error => {
+                    console.log("This is error: " + error)
+                }
+            );
     }
 
     loginChange(event) {
@@ -45,7 +37,7 @@ export default class Login extends Component {
     render() {
         return (
             <Card className={"border border-dark bg-dark text-white"}>
-                <Card.Header>Login</Card.Header>
+                <Card.Header><h3>Login</h3></Card.Header>
                 <Form onSubmit={this.submitLogin} id="loginFormId" >
                     <Card.Body>
                     <Form.Row>

@@ -27,6 +27,23 @@
 .App-link {
   color: #61dafb;
 }
+/* className={"border border-dark bg-dark text-white"} */
+.App table {
+    color: white;
+}
+
+.App Button {
+    width: 100px;
+}
+/* .App button {
+    color: white;
+    width: 100px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+    background-color: #4CAF50;
+} */
 
 @keyframes App-logo-spin {
   from {
