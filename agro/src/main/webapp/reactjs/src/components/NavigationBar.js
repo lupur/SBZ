@@ -22,9 +22,10 @@ class NavigationBar extends React.Component {
     }
 
     componentDidMount() {
+        console.log(Role.ADMIN)
         authService.currentUser.subscribe(x => this.setState({
             currentUser: x,
-            isAdmin: x && x.role === Role.Admin
+            isAdmin: x && x.role === Role.ADMIN
         }))
     }
 

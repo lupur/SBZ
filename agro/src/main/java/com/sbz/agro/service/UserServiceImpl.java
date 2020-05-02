@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sbz.agro.dto.GetUserDto;
+import com.sbz.agro.dto.LoginResponseDto;
 import com.sbz.agro.dto.UserLoginDto;
 import com.sbz.agro.dto.UserRegistrationDto;
 import com.sbz.agro.enums.Role;
@@ -49,8 +50,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(UserLoginDto user) {
-        return authService.login(user.getUsername(), user.getPassword());
+    public LoginResponseDto login(UserLoginDto user) {
+    	String token = authService.login(user.getUsername(), user.getPassword());
+    	if(token == null) return null;
+  
+    	User u = userRepository.findByUsername(user.getUsername());
+    	if(u == null) return null;
+  
+    	return new LoginResponseDto(u.getId(), token, u.getRole().toString());
     }
 
     @Override
@@ -82,5 +89,18 @@ public class UserServiceImpl implements UserService {
 
         return users;
     }
+
+	@Override
+	public boolean setRole(Long id, Role role) {
+		try {
+			User u = userRepository.findById(id).get();
+			u.setRole(role);
+			userRepository.save(u);
+			return true;
+		} catch(Exception e)
+		{
+			return false;
+		}
+	}
 
 }

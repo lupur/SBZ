@@ -33,7 +33,7 @@ class App extends React.Component {
     componentDidMount() {
         authService.currentUser.subscribe(x => this.setState({
             currentUser: x,
-            isAdmin: x && x.role === Role.Admin
+            isAdmin: x && x.role === Role.ADMIN
         }))
     }
 
@@ -50,8 +50,8 @@ class App extends React.Component {
                         <Col lg={12} style={this.marginTop}>
                             <Switch>
                                 <PrivateRoute path="/" exact component={Welcome}/>
-                                <PrivateRoute path="/users" roles={[Role.Admin]} exact component={Users}/>
-                                <PrivateRoute path="/crops" roles={[Role.Admin]} exact component={Crops}/>
+                                <PrivateRoute path="/users" roles={[Role.ADMIN]} exact component={Users}/>
+                                <PrivateRoute path="/crops" roles={[Role.ADMIN]} exact component={Crops}/>
                                 <Route path="/login" exact component={Login}/>
                             </Switch>
                     </Col>

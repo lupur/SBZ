@@ -9,11 +9,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sbz.agro.dto.ChangeRoleDto;
 import com.sbz.agro.dto.LoginResponseDto;
 import com.sbz.agro.dto.UserLoginDto;
 import com.sbz.agro.dto.UserRegistrationDto;
@@ -46,26 +48,17 @@ public class UserController {
         }
 
         UserLoginDto userLogin = new UserLoginDto(userDto.getUsername(), userDto.getPassword());
-        String token = userService.login(userLogin);
-
-        LoginResponseDto userResponse = new LoginResponseDto();
-		userResponse.setToken(token);
-		userResponse.setRole("User");
+        LoginResponseDto userResponse = userService.login(userLogin);
+       
         return ResponseEntity.ok().body(userResponse);
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestBody UserLoginDto user) {
-        String token = userService.login(user);
-        if (token != null) {
-			LoginResponseDto userResponse = new LoginResponseDto();
-			userResponse.setToken(token);
-			if(authService.isAdmin(token)) userResponse.setRole("Admin");
-			else userResponse.setRole("User");
-            return ResponseEntity.ok().body(userResponse);
-        } else {
-            return ResponseEntity.badRequest().body("Wrong credentials");
-        }
+    	LoginResponseDto userLogin = userService.login(user);
+        if (userLogin == null) return ResponseEntity.badRequest().body("Wrong credentials");
+			
+        return ResponseEntity.ok().body(userLogin);
     }
 
     @GetMapping(value = "/logout")
@@ -87,4 +80,19 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
+    @PutMapping
+    public ResponseEntity changeRole(@RequestHeader("Token") String token, @RequestBody ChangeRoleDto changeRole) {
+    	if (!authService.isAdmin(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    	
+    	if(changeRole == null || changeRole.getId() == null || changeRole.getRole() == null)
+            return ResponseEntity.badRequest().body("Bad request");
+
+    	if(userService.setRole(changeRole.getId(), changeRole.getRole())) {
+    		return ResponseEntity.ok().build();
+    	} else {
+            return ResponseEntity.badRequest().body("User with given id does not exists");
+    	}
+    }
 }

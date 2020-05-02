@@ -23,11 +23,11 @@ export default class Users extends Component {
     {
         console.log("ID : " + event.target.id + " New value: " + event.target.value)
 
-        var user = this.state.users.filter( user => {
-            return user.id == event.target.id
-          })
-
-        console.log(user);
+        userService.changeRole(event.target.id, event.target.value)
+            .then( response => 
+            {
+                this.componentDidMount()
+            })
     }
 
     render() {
@@ -50,7 +50,13 @@ export default class Users extends Component {
                                 <td>{user.id}</td>
                                 <td>{user.username}</td>
                                 <td>
-                                <select id={user.id} value={user.role} onChange={this.changeRole} className={"border border-dark bg-dark text-white"}>
+                                <select 
+                                    id={user.id}
+                                    value={user.role}
+                                    onChange={this.changeRole} 
+                                    // {user.id == this.}
+                                    className={"border border-dark bg-dark text-white"}
+                                >
                                     <option value="ADMIN">Admin</option>
                                     <option value="USER">User</option>
                                 </select>

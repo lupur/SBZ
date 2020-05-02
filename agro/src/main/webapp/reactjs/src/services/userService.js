@@ -3,7 +3,8 @@ import {authHeader} from "../helpers/authHeader"
 
 export const userService = {
     getAll,
-    getById
+    getById,
+    changeRole
 }
 
 function getAll() {
@@ -20,4 +21,17 @@ function getAll() {
 
 function getById(id) {
 
+}
+
+function changeRole(id, role) {
+    return axios.put("http://localhost:8080/users",
+    { "id" : id, "role" : role },
+    {
+        headers: authHeader()
+    }).then( response => {
+        return response.data;
+    }).catch(error =>
+        {
+            return Promise.reject(error);
+        });
 }

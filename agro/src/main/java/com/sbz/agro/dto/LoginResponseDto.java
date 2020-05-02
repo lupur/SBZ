@@ -1,6 +1,9 @@
 package com.sbz.agro.dto;
 
+import com.sbz.agro.model.User;
+
 public class LoginResponseDto {
+	Long id;
     String token;
     String role;
 
@@ -8,11 +11,20 @@ public class LoginResponseDto {
         super();
     }
 
-    public LoginResponseDto(String token, String role) {
-		this.token = token;
+    public LoginResponseDto(Long id, String token, String role) {
+		this.id = id;
+    	this.token = token;
 		this.role = role;
 	}
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getToken() {
 		return this.token;
 	}
