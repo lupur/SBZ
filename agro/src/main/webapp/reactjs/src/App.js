@@ -50,9 +50,9 @@ class App extends React.Component {
                         <Col lg={12} style={this.marginTop}>
                             <Switch>
                                 <PrivateRoute path="/" exact component={Welcome}/>
-                                    <PrivateRoute path="/users" roles={[Role.Admin]} exact component={Users}/>
-                                    <PrivateRoute path="/crops" roles={[Role.Admin]} exact component={Crops}/>
-                                    <Route path="/login" exact component={Login}/>
+                                <PrivateRoute path="/users" roles={[Role.Admin]} exact component={Users}/>
+                                <PrivateRoute path="/crops" roles={[Role.Admin]} exact component={Crops}/>
+                                <Route path="/login" exact component={Login}/>
                             </Switch>
                     </Col>
                     </Row>
