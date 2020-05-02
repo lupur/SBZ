@@ -10,8 +10,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.kie.api.definition.type.Role;
+
 @Entity
 @Table(name = "device_readings")
+@Role(Role.Type.EVENT)
 public class Reading {
 
     @Id
@@ -25,13 +28,9 @@ public class Reading {
 
     @Column(name = "device_reading_name")
     private String name;
-
-    @Column(name = "device_reading_type")
-    private String type;
     
-//    @Column(name = "device_reading_value")
-    @Transient
-    private Object value;
+    @Column(name = "device_reading_value")
+    private String value;
 
     @Column(name = "device_reading_ts")
     private Long timestamp;
@@ -40,7 +39,16 @@ public class Reading {
 
     }
 
-    public Long getId() {
+    public Reading(Device device, String name, String value, Long timestamp) {
+		this.device = device;
+		this.name = name;
+		this.value = value;
+		this.timestamp = timestamp;
+	}
+
+
+
+	public Long getId() {
         return id;
     }
 
@@ -64,14 +72,6 @@ public class Reading {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public Long getTimestamp() {
         return timestamp;
     }
@@ -80,11 +80,11 @@ public class Reading {
         this.timestamp = timestamp;
     }
 
-	public Object getValue() {
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 
