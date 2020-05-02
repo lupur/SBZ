@@ -21,8 +21,6 @@ export default class Users extends Component {
 
     changeRole(event)
     {
-        console.log("ID : " + event.target.id + " New value: " + event.target.value)
-
         userService.changeRole(event.target.id, event.target.value)
             .then( response => 
             {
@@ -31,7 +29,6 @@ export default class Users extends Component {
     }
 
     render() {
-        console.log(this.state.users)
         return (
             <Card className={"border border-dark bg-dark text-white"}>
                 <Card.Header><h3>Users</h3></Card.Header>

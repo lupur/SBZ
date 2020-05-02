@@ -11,6 +11,8 @@ public class FieldDto {
     private Double area;
     private Long ownerId;
     private Long cropId;
+    private String ownerName;
+    private String cropName;
     private Date seedingDate;
 
     public FieldDto() {
@@ -21,9 +23,11 @@ public class FieldDto {
         this.id = field.getId();
         this.name = field.getName();
         this.area = field.getArea();
+        this.ownerName = field.getOwner().getUsername();
+        this.cropName = field.getCrop().getName();
+        this.seedingDate = field.getSeedingDate();
         this.ownerId = field.getOwner().getId();
         this.cropId = field.getCrop().getId();
-        this.seedingDate = field.getSeedingDate();
     }
 
     public Long getId() {
@@ -50,23 +54,23 @@ public class FieldDto {
         this.area = area;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
-    }
+    public String getOwnerName() {
+		return ownerName;
+	}
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
 
-    public Long getCropId() {
-        return cropId;
-    }
+	public String getCropName() {
+		return cropName;
+	}
 
-    public void setCropId(Long cropId) {
-        this.cropId = cropId;
-    }
+	public void setCropName(String cropName) {
+		this.cropName = cropName;
+	}
 
-    public Date getSeedingDate() {
+	public Date getSeedingDate() {
         return seedingDate;
     }
 
@@ -74,4 +78,19 @@ public class FieldDto {
         this.seedingDate = seedingDate;
     }
 
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
+
+	public Long getCropId() {
+		return cropId;
+	}
+
+	public void setCropId(Long cropId) {
+		this.cropId = cropId;
+	}
 }

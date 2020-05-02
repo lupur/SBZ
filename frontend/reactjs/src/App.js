@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Users from './components/Users';
 import Crops from './components/Crops'
 import Login from './components/Login'
+import Fields from './components/Fields'
 import {authService} from './services/authService'
 import {Role} from './helpers/role'
 import {history} from './helpers/history'
@@ -52,6 +53,7 @@ class App extends React.Component {
                                 <PrivateRoute path="/" exact component={Welcome}/>
                                 <PrivateRoute path="/users" roles={[Role.ADMIN]} exact component={Users}/>
                                 <PrivateRoute path="/crops" roles={[Role.ADMIN]} exact component={Crops}/>
+                                <PrivateRoute path="/fields" exact component={Fields}/>
                                 <Route path="/login" exact component={Login}/>
                             </Switch>
                     </Col>

@@ -4,6 +4,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import com.sbz.agro.event.DeviceEvent;
 
 @RestController
 @RequestMapping("/events/devices")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DeviceEventController {
 	
 	@Autowired

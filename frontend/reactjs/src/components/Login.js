@@ -37,7 +37,7 @@ export default class Login extends Component {
     render() {
         return (
             <Card className={"border border-dark bg-dark text-white"}>
-                <Card.Header>Login</Card.Header>
+                <Card.Header><h3>Login</h3></Card.Header>
                 <Form onSubmit={this.submitLogin} id="loginFormId" >
                     <Card.Body>
                     <Form.Row>
