@@ -23,7 +23,6 @@ rule "Device set error report"
 		not(ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, objectId == $deviceId, fixedAt == null))
 	then
 		System.out.println("New error for set device: " + $deviceId);
-		System.out.println("MIJUU: " + $type);
 		insert(new ErrorEvent($deviceId, $parentId, ErrorObjectTypes.DEVICE_SET_ERROR.name(), new Date()));
 		// TODO: Record in DB
 end
