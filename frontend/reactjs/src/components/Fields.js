@@ -6,6 +6,7 @@ import {Card, Table, Button, Form } from 'react-bootstrap'
 import {authService} from '../services/authService'
 import {Role} from '../helpers/role'
 import DatePicker from 'react-date-picker'
+import {Link} from 'react-router-dom'
 
 export default class Fields extends Component {
 
@@ -36,6 +37,7 @@ export default class Fields extends Component {
     }
 
     async componentDidMount() {
+        console.log("MOUNTED")
         await authService.currentUser.subscribe(x => {
             this.setState({
                 currentUser: x,
@@ -146,7 +148,7 @@ export default class Fields extends Component {
                     {this.state.fields && this.state.fields.map((field, i) =>
                         <tr key={i}>
                             <td>{field.id}</td>
-                            <td>{field.name}</td>
+                            <td><Link className="tableLink" to={'/fields/'+ field.id}>{field.name}</Link></td>
                             <td>{field.area}</td>
                             <td>{field.cropName}</td>
                             <td>{this.dateFormatter(field.seedingDate)}</td>
