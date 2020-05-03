@@ -22,8 +22,7 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            currentUser: null,
-            isAdmin: false
+            currentUser: null
         };
 
         this.marginTop = {
@@ -33,13 +32,12 @@ class App extends React.Component {
 
     componentDidMount() {
         authService.currentUser.subscribe(x => this.setState({
-            currentUser: x,
-            isAdmin: x && x.role === Role.ADMIN
+            currentUser: x
         }))
     }
 
     render() {
-        const { currentUser, isAdmin } = this.state;
+        const { currentUser } = this.state;
         return (
             <Router history={history}>
             <div className="App">

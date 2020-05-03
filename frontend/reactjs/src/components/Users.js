@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {userService} from '../services/userService'
-import {Card, Table, Dropdown} from 'react-bootstrap'
+import {Card, Table} from 'react-bootstrap'
 
 export default class Users extends Component {
     constructor(props) {

@@ -28,11 +28,11 @@ export default class Crops extends Component {
         cropService.add(this.state.newCrop)
             .then( response => {
                 this.componentDidMount();
-                this.state.newCrop = "";
+                this.setState({newCrop: ""});
             })
             .catch( error => {
                 alert(error);
-                this.state.newCrop = "";
+                this.setState({newCrop: ""});
                 this.componentDidMount();
             });
     }
