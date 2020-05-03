@@ -32,6 +32,7 @@ export default class Fields extends Component {
         this.addNewField = this.addNewField.bind(this);
         this.dateFormatter = this.dateFormatter.bind(this);
         this.datePicked = this.datePicked.bind(this);
+        this.requestDateFormat = this.requestDateFormat.bind(this);
     }
 
     async componentDidMount() {
@@ -45,11 +46,15 @@ export default class Fields extends Component {
         if(this.state.isAdmin)
         {
             await userService.getAll().then(response =>{
-                this.setState({users : response })
+                this.setState({users : response });
+                if(response.length > 0)
+                    this.setState({newOwnerId : response[0].id})
             });
 
             await cropService.getAll().then(response =>{
                 this.setState({crops : response })
+                if(response.length > 0)
+                    this.setState({newCropId : response[0].id})
             });
         }
         await fieldService.getAll().then(response =>{
@@ -60,12 +65,6 @@ export default class Fields extends Component {
     }
 
     newFieldChange(event) {
-        if(event.target.name === "newCropId"
-        || event.target.name === "newOwnerId") {
-            var index = event.nativeEvent.target.selectedIndex;
-            console.log(event.nativeEvent.target[index].value)
-            this.setState({[event.target.name] : event.target.id})
-        }
         this.setState({
             [event.target.name]:event.target.value
         })
@@ -78,10 +77,23 @@ export default class Fields extends Component {
             area: this.state.newFieldArea,
             ownerId: this.state.newOwnerId,
             cropId: this.state.newCropId,
-            seedingDate: this.state.newDate
+            seedingDate: this.requestDateFormat(this.state.newDate)
         }
 
-        console.log(newField);
+        fieldService.add(newField)
+        .then( response => {
+            this.setState({newFieldName: ""});
+            this.setState({newFieldArea: ""});
+            this.setState({newDate: new Date()});
+            this.componentDidMount();
+        })
+        .catch( error => {
+            alert(error);
+            this.setState({newFieldName: ""});
+            this.setState({newFieldArea: ""});
+            this.setState({newDate: new Date()});
+            this.componentDidMount();
+        });
     }
 
     removeField(event) {
@@ -92,9 +104,15 @@ export default class Fields extends Component {
     }
 
     dateFormatter(date) {
-        var options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Intl.DateTimeFormat('en', options).format(new Date(date))
+        var options = { year: 'numeric', month: 'numeric', day: 'numeric'};
+        return new Intl.DateTimeFormat('en-GB', options).format(new Date(date))
         // return new Intl.DateTimeFormat('en').format(date);
+    }
+
+    requestDateFormat(date) {
+        return date.getFullYear() + '-' 
+            + ('0' + date.getMonth()).slice(-2) + '-'
+            + ('0' + date.getDate()).slice(-2)
     }
 
     datePicked(date) {
@@ -160,6 +178,8 @@ export default class Fields extends Component {
                                     name="newFieldArea"
                                     placeholder="Area"
                                     value={this.state.newFieldArea}
+                                    type="number"
+                                    min="0"
                                     onChange={this.newFieldChange}/>
                             </Form.Group>
                             </td>
@@ -170,7 +190,7 @@ export default class Fields extends Component {
                                     value={this.state.newCropId}
                                     onChange={this.newFieldChange}>
                                 {this.state.crops && this.state.crops.map((crop, i) =>
-                                    <option key={crop.id}>{crop.name}</option>
+                                    <option key={crop.id} value={crop.id}>{crop.name}</option>
                                 )}
                             </Form.Control>
                             </Form.Group>
@@ -178,6 +198,7 @@ export default class Fields extends Component {
                             <td>
                                 <DatePicker style={{color: "white"}}
                                     value={this.state.newDate}
+                                    maxDate={new Date()}
                                     onChange={this.datePicked}/>
                             </td>
                             <td>

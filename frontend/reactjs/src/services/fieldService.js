@@ -19,6 +19,7 @@ function getAll() {
 }
 
 function add(newCrop) {
+    console.log(newCrop)
     return axios.post("http://localhost:8080/fields",
     { 
         name : newCrop.name,
