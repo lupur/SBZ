@@ -37,7 +37,6 @@ export default class Fields extends Component {
     }
 
     async componentDidMount() {
-        console.log("MOUNTED")
         await authService.currentUser.subscribe(x => {
             this.setState({
                 currentUser: x,
@@ -150,7 +149,7 @@ export default class Fields extends Component {
                             <td>{field.id}</td>
                             <td><Link className="tableLink" to={'/fields/'+ field.id}>{field.name}</Link></td>
                             <td>{field.area}</td>
-                            <td>{field.cropName}</td>
+                            <td><Link className="tableLink" to={'/crops/'+ field.cropId}>{field.cropName}</Link></td>
                             <td>{this.dateFormatter(field.seedingDate)}</td>
                         {this.state.isAdmin ?
                             <td>{field.ownerName}</td>

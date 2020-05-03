@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Card, Table, Button, Form} from 'react-bootstrap'
 import {cropService} from '../services/cropService'
+import {Link} from 'react-router-dom'
+
 export default class Crops extends Component {
 
     constructor(props) {
@@ -68,7 +70,7 @@ export default class Crops extends Component {
                     {this.state.crops && this.state.crops.map((crop, i) =>
                         <tr key={i}>
                             <td>{crop.id}</td>
-                            <td>{crop.name}</td>
+                            <td><Link className="tableLink" to={'/crops/'+ crop.id}>{crop.name}</Link></td>
                             <td><Button id={crop.id} onClick={this.removeCrop} variant="danger">Remove</Button></td>
                         </tr>
                         
