@@ -5,6 +5,7 @@ const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('
 
 export const authService = {
     login,
+    register,
     logout,
     currentUser: currentUserSubject.asObservable(),
     get currentUserValue () { return currentUserSubject.value }
@@ -29,6 +30,24 @@ function login(username, password) {
         })
 }
 
+function register(username, password, passwordConfirm) {
+    return axios.post("http://localhost:8080/users/registration", 
+        JSON.stringify({ username, password, passwordConfirm }),
+            {
+                headers: { 'Content-Type': 'application/json' }
+            }
+        ).then( response => {
+            localStorage.setItem('currentUser', JSON.stringify(response.data));
+            currentUserSubject.next(response.data);
+            return response.data;
+        }).catch(error => 
+        {
+            logout();
+            window.location.reload(true);
+            alert(error)
+            return Promise.reject(error);
+        })
+}
 function logout() {
     localStorage.removeItem('currentUser');
     currentUserSubject.next(null);
