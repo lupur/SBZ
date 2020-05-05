@@ -85,4 +85,6 @@ public class GrowthPhase {
 	public void setMoistureLowerThreshold(Double moistureLowerThreshold) {
 		this.moistureLowerThreshold = moistureLowerThreshold;
 	}
+	
+	
 }
