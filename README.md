@@ -5,4 +5,4 @@ https://trello.com/b/PRCFJ4mv/sbz
 https://bit.ly/2RV8WbS
 
 ## Specification
-https://github.com/lupur/SBZ/wiki
+https://github.com/lupur/SBZ/wiki/Specifikacija
