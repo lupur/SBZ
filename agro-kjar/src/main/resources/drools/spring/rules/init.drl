@@ -1,4 +1,4 @@
-/*package drools.spring.rules;
+package drools.spring.rules;
 
 import com.sbz.agro.model.User;
 
@@ -7,4 +7,4 @@ rule "User found"
         User()
     then
         System.out.println("There is a user!");
-end*/
+end
