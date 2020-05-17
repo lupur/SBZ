@@ -1,0 +1,153 @@
+package drools.spring.rules;
+
+import com.sbz.agro.model.Reading;
+import com.sbz.agro.enums.DeviceReadingTypes;
+import com.sbz.agro.model.Device;
+import com.sbz.agro.enums.ReadingValues;
+import com.sbz.agro.enums.DeviceDetails;
+import java.util.List;
+import java.util.ArrayList;
+
+global Integer pumpCapacity;
+
+
+rule "Open valve on low moisture"
+    agenda-group "irrigation"
+    when
+
+        //Checking if its moisture reading with critical low value
+        $reading: Reading( name == DeviceReadingTypes.MOISTURE.name(),
+                           $sensor: device,
+                           device.getArray().getField().getMoistureLowerThreshold() > Double.parseDouble(value)
+                        );
+
+        //Check if there was raining in the last hour
+         not (Reading(
+            $sensor.array.id == device.array.id,
+            value=="true",
+            name == DeviceReadingTypes.RAIN.name()
+          ) over window:time(1h))
+
+        //Get valve which is on the same position as sensor which sent reading
+        $valve: Device(
+                    array.id == $sensor.array.id,
+                    position == $sensor.position,
+                    type == DeviceDetails.VALVE);
+
+        //Get last status of the valve
+        $valveStatus: Reading(
+                        device.id == $valve.id,
+                        name == DeviceReadingTypes.STATUS.name()
+                        ) over window:length(1)
+
+        //that status must be OK
+        Reading(value == ReadingValues.OK.name()) from $valveStatus
+
+        //Get last open/closed state of valve
+        $valveState: Reading(
+                        device.id == $valve.id,
+                        name ==  DeviceReadingTypes.STATE.name()
+                        ) over window:length(1)
+
+        //If we want to open valve - it must be currently closed
+        Reading($valveState == this, value == ReadingValues.OFF.name())
+    then
+        System.out.println("-- Low moisture found, should open valve --");
+        System.out.println("-- TODO: Open valve action --");
+        System.out.println(" Got valve status: " + $valveStatus.toString());
+end
+
+
+rule "Close valve on high moisture"
+    agenda-group "irrigation"
+    when
+
+        //Checking if its moisture reading with critical low value
+        $reading: Reading( name == DeviceReadingTypes.MOISTURE.name(),
+                           $sensor: device,
+                           device.getArray().getField().getMoistureUpperThreshold() < Double.parseDouble(value)
+                        );
+
+        //Get valve which is on the same position as sensor which sent reading
+        $valve: Device( array.id == $sensor.array.id,
+                        position == $sensor.position,
+                        type == DeviceDetails.VALVE);
+
+        //Get last status of the valve
+        $valveStatus: Reading(
+                            device.id == $valve.id,
+                            name == DeviceReadingTypes.STATUS.name()
+                            ) over window:length(1)
+
+        //that status must be OK
+        Reading($valveStatus == this, value == ReadingValues.OK.name())
+
+        //Get last open/closed state of valve
+        $valveState: Reading(
+                            device.id == $valve.id,
+                            name ==  DeviceReadingTypes.STATE.name()
+                            ) over window:length(1)
+
+        //If we want to close valve - it must be currently opened
+        Reading($valveState == this, value == ReadingValues.ON.name())
+    then
+        System.out.println("-- High moisture found, should close valve --");
+        System.out.println("-- TODO: Close valve action --");
+end
+
+rule "Open pump"
+    agenda-group "irrigation"
+    when
+        //Received valve reading - ON
+        $openValveReading: Reading(
+                            value == ReadingValues.ON.name(),
+                            device.type == DeviceDetails.VALVE,
+                            $valve: device
+                            )
+
+        //Get pump on that array
+        $pump: Device(type == DeviceDetails.PUMP,
+                    array == $valve.array);
+
+        //Getting last status of pump
+        $pumpStatus: Reading(
+                   device.id == $pump.id,
+                   name == DeviceReadingTypes.STATUS.name()
+                ) over window:length(1)
+        //Last status must be OK
+        Reading($pumpStatus == this, value == ReadingValues.OK.name());
+
+        //Getting last on/off state of the pump
+        $pumpState: Reading(
+                        device.id == $pump.id,
+                        device.type == DeviceDetails.PUMP,
+                        name ==  DeviceReadingTypes.STATE.name()
+                    ) over window:length(1)
+
+        //If we want to open pump - it must be currently closed
+        Reading($pumpState == this, value == ReadingValues.OFF.name());
+
+    then
+        System.out.println("-- Valve in array exists, should open pump--");
+        System.out.println("-- TODO: Open pump action --");
+end
+
+rule "Close valves since it is raining"
+    agenda-group "irrigation"
+    when
+        //Checking if its moisture reading with critical low value
+        $reading: Reading( name == DeviceReadingTypes.RAIN.name(),
+                           value == "true",
+                           $sensor: device
+                        );
+                        
+        //There should be not a single false value
+         not (Reading(
+            $sensor.array.id == device.array.id,
+            value=="false",
+            name == DeviceReadingTypes.RAIN.name()
+          ) over window:time(90m))
+    then
+        System.out.println("-- It is raining for half an hour - close valves --");
+        System.out.println("-- TODO: Open pump action --");
+end

@@ -1,4 +1,4 @@
-package drools.spring.rules;
+/*package drools.spring.rules;
 
 import com.sbz.agro.event.DeviceEvent;
 import com.sbz.agro.model.Reading;
@@ -139,3 +139,4 @@ rule "Field error fix"
 		modify($fieldError) { setFixedAt(new Date()); }
 		System.out.println("Field: " + $parentId + " fixed.");	
 end
+*/

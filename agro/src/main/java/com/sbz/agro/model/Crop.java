@@ -1,5 +1,6 @@
 package com.sbz.agro.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -46,5 +47,13 @@ public class Crop {
 
 	public void setGrowthPhases(Set<GrowthPhase> growthPhases) {
 		this.growthPhases = growthPhases;
+	}
+	
+	public void addGrowthPhase(GrowthPhase growthPhase) {
+		if(growthPhases == null) {
+			growthPhases = new HashSet<>();
+		}
+		
+		growthPhases.add(growthPhase);
 	}
 }

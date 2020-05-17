@@ -1,5 +1,6 @@
 package com.sbz.agro.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.sbz.agro.enums.DeviceDetails;
 
 @Entity
 @Table(name = "device_arrays")
@@ -41,6 +44,24 @@ public class DeviceArray {
 
     public List<Device> getDevices() {
         return devices;
+    }
+
+    public List<Device> getValves() {
+        List<Device> valves = new ArrayList<Device>();
+        for(Device d : devices) {
+            if(d.getType() == DeviceDetails.VALVE)
+                valves.add(d);
+        }
+        return valves;
+    }
+
+    public List<Device> getMoistureSensors() {
+        List<Device> moistureSensors = new ArrayList<Device>();
+        for(Device d : devices) {
+            if(d.getType() == DeviceDetails.MOISTURE_SENSOR)
+            	moistureSensors.add(d);
+        }
+        return moistureSensors;
     }
 
     public void setDevices(List<Device> devices) {

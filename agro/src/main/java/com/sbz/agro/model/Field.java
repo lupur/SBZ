@@ -1,5 +1,6 @@
 package com.sbz.agro.model;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,10 +36,10 @@ public class Field {
     private Crop crop;
     @OneToMany(mappedBy = "field", fetch = FetchType.EAGER)
     private List<DeviceArray> deviceArrays;
-    @Column(name = "moisture_max")
-    private Double moistureUpperThreshold;
-    @Column(name = "moisture_min")
-    private Double moistureLowerThreshold;
+//    @Column(name = "moisture_max")
+//    private Double moistureUpperThreshold;
+//    @Column(name = "moisture_min")
+//    private Double moistureLowerThreshold;
     @Column(name = "seeding_date")
     private Date seedingDate;
 
@@ -101,19 +102,28 @@ public class Field {
     }
 
     public Double getMoistureUpperThreshold() {
-        return moistureUpperThreshold;
-    }
-
-    public void setMoistureUpperThreshold(Double moistureUpperThreshold) {
-        this.moistureUpperThreshold = moistureUpperThreshold;
+    	for(GrowthPhase growthPhase : crop.getGrowthPhases()) {
+    		long diff = (new Date()).getTime() - seedingDate.getTime();
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+    		
+    		if(diffDays >= growthPhase.getPhaseStartDay() && diffDays <= growthPhase.getPhaseEndDay()) {
+    			return growthPhase.getMoistureUpperThreshold();
+    		}
+    	}
+        return -1D;
     }
 
     public Double getMoistureLowerThreshold() {
-        return moistureLowerThreshold;
-    }
+    	System.out.println("Size: " + crop.getGrowthPhases().size());
+    	for(GrowthPhase growthPhase : crop.getGrowthPhases()) {
+    		long diff = (new Date()).getTime() - seedingDate.getTime();
+			long diffDays = diff / (24 * 60 * 60 * 1000);
 
-    public void setMoistureLowerThreshold(Double moistureLowerThreshold) {
-        this.moistureLowerThreshold = moistureLowerThreshold;
+			if(diffDays >= growthPhase.getPhaseStartDay() && diffDays <= growthPhase.getPhaseEndDay()) {
+    			return growthPhase.getMoistureLowerThreshold();
+    		}
+    	}
+        return -1D;
     }
 
     public Date getSeedingDate() {
@@ -123,5 +133,5 @@ public class Field {
     public void setSeedingDate(Date seedingDate) {
         this.seedingDate = seedingDate;
     }
-
+    
 }
