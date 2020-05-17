@@ -8,13 +8,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import java.util.Date;
 
+import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
 
 @Entity
 @Table(name = "device_readings")
 @Role(Role.Type.EVENT)
+@Timestamp("timestamp")
+@Expires("1h")
 public class Reading {
 
     @Id
@@ -33,18 +37,18 @@ public class Reading {
     private String value;
 
     @Column(name = "device_reading_ts")
-    private Long timestamp;
+    private Date timestamp;
 
     public Reading() {
 
     }
 
-    public Reading(Device device, String name, String value, Long timestamp) {
-		this.device = device;
-		this.name = name;
-		this.value = value;
-		this.timestamp = timestamp;
-	}
+    public Reading(Device device, String name, String value, Date timestamp) {
+        this.device = device;
+        this.name = name;
+        this.value = value;
+        this.timestamp = timestamp;
+    }
 
 
 
@@ -72,20 +76,27 @@ public class Reading {
         this.name = name;
     }
 
-    public Long getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+        }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+        }
+
+    @Override
+    public String toString() {
+        return "Reading [id=" + id + ", device=" + device + ", name=" + name + ", value=" + value + ", timestamp="
+                + timestamp + "]";
+}
+
 
 }

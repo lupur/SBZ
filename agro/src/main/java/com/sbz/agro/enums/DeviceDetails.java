@@ -4,8 +4,10 @@ public enum DeviceDetails {
 	
 	// PUMP devices
 	PUMP(1l, new DeviceReadingTypes[] {DeviceReadingTypes.STATUS, DeviceReadingTypes.STATE}),
+	// MOISTURE_SENSOR devices
+	MOISTURE_SENSOR(2l, new DeviceReadingTypes[] {DeviceReadingTypes.STATUS, DeviceReadingTypes.MOISTURE}),
 	// SENSOR devices
-	SENSOR(2l, new DeviceReadingTypes[] {DeviceReadingTypes.STATUS, DeviceReadingTypes.MOISTURE, DeviceReadingTypes.TEMPERATURE, DeviceReadingTypes.RAIN}),
+	RAIN_SENSOR(2l, new DeviceReadingTypes[] {DeviceReadingTypes.STATUS, DeviceReadingTypes.MOISTURE}),
 	//VALVE devices
 	VALVE(3l, new DeviceReadingTypes[] {DeviceReadingTypes.STATUS, DeviceReadingTypes.STATE});
 	

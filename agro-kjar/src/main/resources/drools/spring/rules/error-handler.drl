@@ -16,126 +16,126 @@ import java.util.Date;
 
 // -----------------------------------------------------------------------------------------------------------------
 rule "Device set error report"
-	lock-on-active
-	when
-		$newReading: Reading($value: value == ReadingValues.ERROR.name, $deviceId: device.id, $parentId: device.array.id)
-		Device(id == $deviceId, $type: type, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
-		not(ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, objectId == $deviceId, fixedAt == null))
-	then
-		System.out.println("New error for set device: " + $deviceId);
-		insert(new ErrorEvent($deviceId, $parentId, ErrorObjectTypes.DEVICE_SET_ERROR.name(), new Date()));
-		// TODO: Record in DB
+    lock-on-active
+    when
+        $newReading: Reading($value: value == ReadingValues.ERROR.name, $deviceId: device.id, $parentId: device.array.id)
+        Device(id == $deviceId, $type: type, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
+        not(ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, objectId == $deviceId, fixedAt == null))
+    then
+        System.out.println("New error for set device: " + $deviceId);
+        insert(new ErrorEvent($deviceId, $parentId, ErrorObjectTypes.DEVICE_SET_ERROR.name(), new Date()));
+        // TODO: Record in DB
 end
 
 rule "Pump error report"
-	lock-on-active
-	when
-		$newReading: Reading($value: value == ReadingValues.ERROR.name, $deviceId: device.id, $parentId: device.array.id)
-		Device(id == $deviceId, $type: type == DeviceDetails.PUMP)
-		not(ErrorEvent(type == ErrorObjectTypes.PUMP_ERROR.name, objectId == $deviceId, fixedAt == null))
-	then
-		System.out.println("New error for pump: " + $deviceId);
-		insert(new ErrorEvent($deviceId, $parentId, ErrorObjectTypes.PUMP_ERROR.name(), new Date()));
-		// TODO: Record in DB
+    lock-on-active
+    when
+        $newReading: Reading($value: value == ReadingValues.ERROR.name, $deviceId: device.id, $parentId: device.array.id)
+        Device(id == $deviceId, $type: type == DeviceDetails.PUMP)
+        not(ErrorEvent(type == ErrorObjectTypes.PUMP_ERROR.name, objectId == $deviceId, fixedAt == null))
+    then
+        System.out.println("New error for pump: " + $deviceId);
+        insert(new ErrorEvent($deviceId, $parentId, ErrorObjectTypes.PUMP_ERROR.name(), new Date()));
+        // TODO: Record in DB
 end
 
 rule "Device error fix for both set device and pump"
-	lock-on-active
-	when 
-		$newReading: Reading($value: value == ReadingValues.OK.name, $deviceId: device.id)
-		Device(id == $deviceId, $deviceType: type)
-		$errorEvent: ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name || type == ErrorObjectTypes.PUMP_ERROR.name, objectId == $deviceId, fixedAt == null)
-		not(Reading(this != $newReading, value == ReadingValues.ERROR.name, device.id == $deviceId, this meets[5s] $newReading))
-	then
-		System.out.println("Ok status received for device: " + $deviceId + ". Type of device: " + $deviceType + " No errors in last 10s. Device fixed!");
-		modify($errorEvent) { setFixedAt(new Date()); };
+    lock-on-active
+    when 
+        $newReading: Reading($value: value == ReadingValues.OK.name, $deviceId: device.id)
+        Device(id == $deviceId, $deviceType: type)
+        $errorEvent: ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name || type == ErrorObjectTypes.PUMP_ERROR.name, objectId == $deviceId, fixedAt == null)
+        not(Reading(this != $newReading, value == ReadingValues.ERROR.name, device.id == $deviceId, this meets[5s] $newReading))
+    then
+        System.out.println("Ok status received for device: " + $deviceId + ". Type of device: " + $deviceType + " No errors in last 10s. Device fixed!");
+        modify($errorEvent) { setFixedAt(new Date()); };
 end
 
 rule "Array error report caused by device sets issues (sensors and valves)"
-	when
-		ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt == null)
-		Device(id == $objectId, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
-		DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
-		$sizeOfArray: Number() from accumulate(
-			Device(type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR, array.id == $parentId),
-			count(1)
-		)
-		$errorElementsNumber: Number(doubleValue >= ($sizeOfArray*0.50)) from accumulate(
-           	ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, parentId == $parentId, fixedAt == null),
+    when
+        ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt == null)
+        Device(id == $objectId, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
+        DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
+        $sizeOfArray: Number() from accumulate(
+            Device(type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR, array.id == $parentId),
+            count(1)
+        )
+        $errorElementsNumber: Number(doubleValue >= ($sizeOfArray*0.50)) from accumulate(
+            ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, parentId == $parentId, fixedAt == null),
             count(1)
         )
         not(ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, objectId == $parentId, fixedAt == null))
-	then
-		insert(new ErrorEvent($parentId, $fieldId, ErrorObjectTypes.ARRAY_ERROR.name(), new Date()));
-		System.out.println("ErrorEvent for array: " + $parentId + " caused by device sets issues.");	
+    then
+        insert(new ErrorEvent($parentId, $fieldId, ErrorObjectTypes.ARRAY_ERROR.name(), new Date()));
+        System.out.println("ErrorEvent for array: " + $parentId + " caused by device sets issues.");    
 end
 
 rule "Array error report caused by pump issue"
-	when
-		ErrorEvent($type: type == ErrorObjectTypes.PUMP_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt == null)
-		DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
-		Device(id == $objectId, type == DeviceDetails.PUMP)
-		not(ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, objectId == $parentId, fixedAt == null))
-	then
-		insert(new ErrorEvent($parentId, $fieldId, ErrorObjectTypes.ARRAY_ERROR.name(), new Date()));
-		System.out.println("ErrorEvent for array: " + $parentId + " caused by pump issue.");	
+    when
+        ErrorEvent($type: type == ErrorObjectTypes.PUMP_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt == null)
+        DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
+        Device(id == $objectId, type == DeviceDetails.PUMP)
+        not(ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, objectId == $parentId, fixedAt == null))
+    then
+        insert(new ErrorEvent($parentId, $fieldId, ErrorObjectTypes.ARRAY_ERROR.name(), new Date()));
+        System.out.println("ErrorEvent for array: " + $parentId + " caused by pump issue.");    
 end
 
 rule "Array error fix"
-	when
-		ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name || type == ErrorObjectTypes.PUMP_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt != null)
-		Device(id == $objectId, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
-		DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
-		$sizeOfArray: Number() from accumulate(
-			Device(type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR, array.id == $parentId),
-			count(1)
-		)
-		$errorElementsNumber: Number(doubleValue < ($sizeOfArray*0.50)) from accumulate(
-           	ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, parentId == $parentId, fixedAt == null),
+    when
+        ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name || type == ErrorObjectTypes.PUMP_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt != null)
+        Device(id == $objectId, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
+        DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
+        $sizeOfArray: Number() from accumulate(
+            Device(type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR, array.id == $parentId),
+            count(1)
+        )
+        $errorElementsNumber: Number(doubleValue < ($sizeOfArray*0.50)) from accumulate(
+            ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, parentId == $parentId, fixedAt == null),
             count(1)
         )
         not(ErrorEvent(parentId == $parentId, type == ErrorObjectTypes.PUMP_ERROR.name(), fixedAt == null))
         $arrayError: ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, objectId == $parentId, fixedAt == null)
-	then
-		modify($arrayError) { setFixedAt(new Date()); }
-		System.out.println("Array: " + $parentId + " fixed.");	
+    then
+        modify($arrayError) { setFixedAt(new Date()); }
+        System.out.println("Array: " + $parentId + " fixed.");  
 end
 
 rule "Field error report"
-	when
-		ErrorEvent($type: type == ErrorObjectTypes.ARRAY_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt == null)
-		DeviceArray(id == $objectId)
-		Field(id == $parentId, $size: deviceArrays.size, $userId: owner.id)
-		$arraysInField: Number() from accumulate(
-			DeviceArray(id == $parentId),
-			count(1)
-		)
-		$errorElementsNumber: Number(doubleValue >= ($arraysInField*0.50)) from accumulate(
-           	ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, parentId == $parentId, fixedAt == null),
+    when
+        ErrorEvent($type: type == ErrorObjectTypes.ARRAY_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt == null)
+        DeviceArray(id == $objectId)
+        Field(id == $parentId, $size: deviceArrays.size, $userId: owner.id)
+        $arraysInField: Number() from accumulate(
+            DeviceArray(id == $parentId),
+            count(1)
+        )
+        $errorElementsNumber: Number(doubleValue >= ($arraysInField*0.50)) from accumulate(
+            ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, parentId == $parentId, fixedAt == null),
             count(1)
         )
         not(ErrorEvent(type == ErrorObjectTypes.FIELD_ERROR.name, objectId == $parentId, fixedAt == null))
-	then
-		insert(new ErrorEvent($parentId, null, ErrorObjectTypes.FIELD_ERROR.name(), new Date()));
-		System.out.println("ErrorEvent for field: " + $parentId);	
+    then
+        insert(new ErrorEvent($parentId, null, ErrorObjectTypes.FIELD_ERROR.name(), new Date()));
+        System.out.println("ErrorEvent for field: " + $parentId);   
 end
 
 rule "Field error fix"
-	when
-		ErrorEvent($type: type == ErrorObjectTypes.ARRAY_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt != null)
-		DeviceArray(id == $objectId)
-		Field(id == $parentId, $size: deviceArrays.size, $userId: owner.id)
-		$arraysInField: Number() from accumulate(
-			DeviceArray(id == $parentId),
-			count(1)
-		)
-		$errorElementsNumber: Number(doubleValue < ($arraysInField*0.50)) from accumulate(
-           	ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, parentId == $parentId, fixedAt == null),
+    when
+        ErrorEvent($type: type == ErrorObjectTypes.ARRAY_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt != null)
+        DeviceArray(id == $objectId)
+        Field(id == $parentId, $size: deviceArrays.size, $userId: owner.id)
+        $arraysInField: Number() from accumulate(
+            DeviceArray(id == $parentId),
+            count(1)
+        )
+        $errorElementsNumber: Number(doubleValue < ($arraysInField*0.50)) from accumulate(
+            ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, parentId == $parentId, fixedAt == null),
             count(1)
         )
         not(ErrorEvent(parentId == $parentId, type == ErrorObjectTypes.ARRAY_ERROR.name(), fixedAt == null))
         $fieldError: ErrorEvent(type == ErrorObjectTypes.FIELD_ERROR.name, objectId == $parentId, fixedAt == null)
-	then
-		modify($fieldError) { setFixedAt(new Date()); }
-		System.out.println("Field: " + $parentId + " fixed.");	
+    then
+        modify($fieldError) { setFixedAt(new Date()); }
+        System.out.println("Field: " + $parentId + " fixed.");  
 end

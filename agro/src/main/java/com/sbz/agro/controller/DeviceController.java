@@ -108,8 +108,8 @@ public class DeviceController {
 
         if (newDevice.getType() == DeviceDetails.PUMP && newDevice.getPosition() != 0) {
             return ResponseEntity.badRequest().body("Pump position must be 0");
-        } else if (newDevice.getType() != DeviceDetails.PUMP && newDevice.getPosition() == 0) {
-            return ResponseEntity.badRequest().body("Only Pump position can be 0");
+        } else if (newDevice.getType() != DeviceDetails.PUMP && newDevice.getType() != DeviceDetails.RAIN_SENSOR && newDevice.getPosition() == 0) {
+            return ResponseEntity.badRequest().body("Only Pump and rain sensor position can be 0");
         }
 
         if (!deviceService.isPositionAvailable(newDevice.getArrayId(), newDevice.getPosition(), newDevice.getType())) {

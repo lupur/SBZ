@@ -43,6 +43,9 @@ public class UserController {
 
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity registartion(@RequestBody UserRegistrationDto userDto, BindingResult bindingResult) {
+    	if(userDto.getUsername().isEmpty() || userDto.getPassword().isEmpty() || userDto.getPasswordConfirm().isEmpty()) {
+    		return ResponseEntity.badRequest().build();
+    	}
         if (!userService.registerNewUser(userDto)) {
             return ResponseEntity.badRequest().build();
         }
