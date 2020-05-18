@@ -137,7 +137,6 @@ rule "Close valves since it is raining"
     when
         //Checking if its moisture reading with critical low value
         $reading: Reading( name == DeviceReadingTypes.RAIN.name(),
-                           value == "true",
                            $sensor: device
                         );
                         

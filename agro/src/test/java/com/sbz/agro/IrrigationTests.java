@@ -50,14 +50,19 @@ public class IrrigationTests {
     }
 
     @Test
-    void testLowMoisture() {
+    void testLowMoistureLevel() {
+        System.out.println("**************************");
+        System.out.println("TEST Low Moisture Level:");
+        System.out.println("**************************");
+
         initKie();
+
         // Initial devices setup
         GrowthPhase gf = new GrowthPhase();
         gf.setId(1L);
         gf.setMoistureLowerThreshold(20D);
         gf.setMoistureUpperThreshold(60D);
-        gf.setName("Rani razvoj");
+        gf.setName("Early growth phase");
         gf.setPhaseEndDay(5);
         gf.setPhaseStartDay(1);
 
@@ -125,6 +130,10 @@ public class IrrigationTests {
 
     @Test
     void testHighMoisture() {
+        System.out.println("**************************");
+        System.out.println("TEST High Moisture Level:");
+        System.out.println("**************************");
+
         initKie();
         // Initial devices setup
         GrowthPhase gf = new GrowthPhase();
@@ -200,6 +209,9 @@ public class IrrigationTests {
     @Test
     void testPumpOpen() {
 
+    	System.out.println("**************************");
+        System.out.println("TEST Open pump:");
+        System.out.println("**************************");
         initKie();
         DeviceArray array1 = new DeviceArray();
         DeviceArray array2 = new DeviceArray();
@@ -255,14 +267,18 @@ public class IrrigationTests {
     
     @Test
     void testCloseValveWhenRaining() {
+    	System.out.println("**************************");
+        System.out.println("TEST Close valves when raining:");
+        System.out.println("**************************");
+    	initKie();
     	DeviceArray array1 = new DeviceArray();
 
         Device rainSensor = new Device("Rain1", DeviceDetails.RAIN_SENSOR, array1, 0);
 
         //Setting rain sensor readings
-        Reading rain1 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "true", dateNow);
+        Reading rain1 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", twoDaysAgo);
         Reading rain2 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "true", dateNow);
-        Reading rain3 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", twoDaysAgo);
+        Reading rain3 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "true", dateNow);
         rain1.setId(10l);
         rain2.setId(11l);
         rain3.setId(12l);
