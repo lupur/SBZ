@@ -32,12 +32,17 @@ public class Device {
     public Device() {
 
     }
-    
-	public Device(String serialNo, DeviceDetails type, DeviceArray array, Integer position) {
+	
+	public Device(Long id, String serialNo, DeviceDetails type, DeviceArray array, Integer position) {
+		this.id = id;
 		this.serialNo = serialNo;
 		this.type = type;
 		this.array = array;
 		this.position = position;
+	}
+	
+	public Device(String serialNo, DeviceDetails type, DeviceArray array, Integer position) {
+		this(null, serialNo, type, array, position);
 	}
 
     public Long getId() {

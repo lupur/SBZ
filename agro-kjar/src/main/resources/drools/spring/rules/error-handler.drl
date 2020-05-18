@@ -19,7 +19,7 @@ rule "Device set error report"
     lock-on-active
     when
         $newReading: Reading($value: value == ReadingValues.ERROR.name, $deviceId: device.id, $parentId: device.array.id)
-        Device(id == $deviceId, $type: type, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
+        Device(id == $deviceId, $type: type, type == DeviceDetails.VALVE || type == DeviceDetails.MOISTURE_SENSOR)
         not(ErrorEvent(type == ErrorObjectTypes.DEVICE_SET_ERROR.name, objectId == $deviceId, fixedAt == null))
     then
         System.out.println("New error for set device: " + $deviceId);
@@ -45,19 +45,19 @@ rule "Device error fix for both set device and pump"
         $newReading: Reading($value: value == ReadingValues.OK.name, $deviceId: device.id)
         Device(id == $deviceId, $deviceType: type)
         $errorEvent: ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name || type == ErrorObjectTypes.PUMP_ERROR.name, objectId == $deviceId, fixedAt == null)
-        not(Reading(this != $newReading, value == ReadingValues.ERROR.name, device.id == $deviceId, this meets[5s] $newReading))
+        not(Reading(this != $newReading, value == ReadingValues.ERROR.name, device.id == $deviceId, this meets[10m] $newReading))
     then
-        System.out.println("Ok status received for device: " + $deviceId + ". Type of device: " + $deviceType + " No errors in last 10s. Device fixed!");
+        System.out.println("Ok status received for device: " + $deviceId + ". Type of device: " + $deviceType + " No errors in last 10min. Device fixed!");
         modify($errorEvent) { setFixedAt(new Date()); };
 end
 
 rule "Array error report caused by device sets issues (sensors and valves)"
     when
         ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt == null)
-        Device(id == $objectId, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
+        Device(id == $objectId, type == DeviceDetails.VALVE || type == DeviceDetails.MOISTURE_SENSOR)
         DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
         $sizeOfArray: Number() from accumulate(
-            Device(type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR, array.id == $parentId),
+            Device(type == DeviceDetails.VALVE || type == DeviceDetails.MOISTURE_SENSOR, array.id == $parentId),
             count(1)
         )
         $errorElementsNumber: Number(doubleValue >= ($sizeOfArray*0.50)) from accumulate(
@@ -84,10 +84,9 @@ end
 rule "Array error fix"
     when
         ErrorEvent($type: type == ErrorObjectTypes.DEVICE_SET_ERROR.name || type == ErrorObjectTypes.PUMP_ERROR.name, $objectId: objectId, $parentId: parentId, $occuredAt: occuredAt, fixedAt != null)
-        Device(id == $objectId, type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR)
         DeviceArray(id == $parentId, $size: devices.size, $fieldId: field.id)
         $sizeOfArray: Number() from accumulate(
-            Device(type == DeviceDetails.VALVE || type == DeviceDetails.SENSOR, array.id == $parentId),
+            Device(type == DeviceDetails.VALVE || type == DeviceDetails.MOISTURE_SENSOR, array.id == $parentId),
             count(1)
         )
         $errorElementsNumber: Number(doubleValue < ($sizeOfArray*0.50)) from accumulate(
@@ -107,7 +106,7 @@ rule "Field error report"
         DeviceArray(id == $objectId)
         Field(id == $parentId, $size: deviceArrays.size, $userId: owner.id)
         $arraysInField: Number() from accumulate(
-            DeviceArray(id == $parentId),
+            DeviceArray(field.id == $parentId),
             count(1)
         )
         $errorElementsNumber: Number(doubleValue >= ($arraysInField*0.50)) from accumulate(
@@ -126,14 +125,13 @@ rule "Field error fix"
         DeviceArray(id == $objectId)
         Field(id == $parentId, $size: deviceArrays.size, $userId: owner.id)
         $arraysInField: Number() from accumulate(
-            DeviceArray(id == $parentId),
+            DeviceArray(field.id == $parentId),
             count(1)
         )
         $errorElementsNumber: Number(doubleValue < ($arraysInField*0.50)) from accumulate(
             ErrorEvent(type == ErrorObjectTypes.ARRAY_ERROR.name, parentId == $parentId, fixedAt == null),
             count(1)
         )
-        not(ErrorEvent(parentId == $parentId, type == ErrorObjectTypes.ARRAY_ERROR.name(), fixedAt == null))
         $fieldError: ErrorEvent(type == ErrorObjectTypes.FIELD_ERROR.name, objectId == $parentId, fixedAt == null)
     then
         modify($fieldError) { setFixedAt(new Date()); }
