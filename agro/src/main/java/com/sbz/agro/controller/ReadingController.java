@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +37,7 @@ public class ReadingController {
     TokenUtil tokenUtil;
 
     @PostMapping()
-    public ResponseEntity addReading(ReadingDto newReading) {
-        System.out.println("New reading: " + newReading.toString());
+    public ResponseEntity addReading(@RequestBody ReadingDto newReading) {
         if (newReading == null || !newReading.isValid()) {
             return ResponseEntity.badRequest().build();
         }
@@ -62,6 +62,7 @@ public class ReadingController {
         if (!deviceService.isValidReadingName(name)) {
             return ResponseEntity.badRequest().build();
         }
+
         return ResponseEntity.ok().body(readingService.getReadingsBySerialNoAndName(serialNo, name));
     }
 }

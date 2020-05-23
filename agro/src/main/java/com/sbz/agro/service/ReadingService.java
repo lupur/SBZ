@@ -1,12 +1,11 @@
 package com.sbz.agro.service;
 
-import java.util.Set;
+import java.util.List;
 
 import com.sbz.agro.dto.ReadingDto;
-import com.sbz.agro.model.Reading;
 
 public interface ReadingService {
     boolean addReading(ReadingDto newReading);
 
-    Set<Reading> getReadingsBySerialNoAndName(String serialNo, String name);
+    List<ReadingDto> getReadingsBySerialNoAndName(String serialNo, String name);
 }

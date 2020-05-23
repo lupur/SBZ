@@ -2,6 +2,8 @@ package com.sbz.agro.dto;
 
 import java.util.Date;
 
+import com.sbz.agro.model.Reading;
+
 public class ReadingDto {
 
     public String serialNo;
@@ -11,6 +13,13 @@ public class ReadingDto {
 
     public ReadingDto() {
         super();
+    }
+
+    public ReadingDto(Reading reading) {
+        serialNo = reading.getDevice().getSerialNo();
+        name = reading.getName();
+        value = reading.getValue();
+        timestamp = reading.getTimestamp();
     }
 
     public String getSerialNo() {
