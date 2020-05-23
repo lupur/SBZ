@@ -13,4 +13,6 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     Device findByIdAndArray_Id(Long id, Long arrayId);
 
     Device findByArray_IdAndPositionAndType(Long arrayId, Integer position, DeviceDetails type);
+
+    Device findBySerialNo(String serialNo);
 }

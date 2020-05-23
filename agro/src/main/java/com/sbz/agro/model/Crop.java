@@ -3,6 +3,7 @@ package com.sbz.agro.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,7 +23,7 @@ public class Crop {
 	private Long id;
 	@Column(name = "crop_name")
 	private String name;
-	@OneToMany(mappedBy = "crop", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "crop", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
 	private Set<GrowthPhase> growthPhases;
 
 	public Long getId() {

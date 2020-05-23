@@ -27,52 +27,52 @@ import com.sbz.agro.service.GrowthPhaseService;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class GrowthPhaseController {
 
-	@Autowired
-	AuthService authService;
+    @Autowired
+    AuthService authService;
 
-	@Autowired
-	GrowthPhaseService growthPhaseService;
+    @Autowired
+    GrowthPhaseService growthPhaseService;
 
-	@Autowired
-	CropService cropService;
+    @Autowired
+    CropService cropService;
 
-	@Autowired
-	TokenUtil tokenUtil;
+    @Autowired
+    TokenUtil tokenUtil;
 
-	@PostMapping()
-	public ResponseEntity addGrowthPhase(@RequestHeader("Token") String token,
-	        @RequestBody GrowthPhaseDto growthPhase) {
-		if (!authService.isAdmin(token)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
+    @PostMapping()
+    public ResponseEntity addGrowthPhase(@RequestHeader("Token") String token,
+            @RequestBody GrowthPhaseDto growthPhase) {
+        if (!authService.isAdmin(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-		if (growthPhaseService.addGrowthPhase(growthPhase)) {
-			return ResponseEntity.ok().build();
-		}
-		return ResponseEntity.badRequest().build();
-	}
+        if (growthPhaseService.addGrowthPhase(growthPhase)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
-	@DeleteMapping(value = "/{growthPhaseId}")
-	public ResponseEntity deleteField(@RequestHeader("Token") String token, @PathVariable Long growthPhaseId) {
-		if (!authService.isAdmin(token)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
+    @DeleteMapping(value = "/{growthPhaseId}")
+    public ResponseEntity deleteField(@RequestHeader("Token") String token, @PathVariable Long growthPhaseId) {
+        if (!authService.isAdmin(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-		if (growthPhaseService.removeGrowthPhase(growthPhaseId)) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
+        if (growthPhaseService.removeGrowthPhase(growthPhaseId)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-	@GetMapping(value = "{cropId}")
-	public ResponseEntity getAllGrowthPhases(@RequestHeader("Token") String token, @PathVariable Long cropId) {
-		if (!authService.atLeastUser(token)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
+    @GetMapping(value = "{cropId}")
+    public ResponseEntity getAllGrowthPhases(@RequestHeader("Token") String token, @PathVariable Long cropId) {
+        if (!authService.atLeastUser(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-		Set<GrowthPhaseDto> gp = growthPhaseService.getAllCropGrowthPhases(cropId);
+        Set<GrowthPhaseDto> gp = growthPhaseService.getAllCropGrowthPhases(cropId);
 
-		return ResponseEntity.ok().body(gp);
-	}
+        return ResponseEntity.ok().body(gp);
+    }
 }

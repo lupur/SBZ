@@ -18,4 +18,10 @@ public interface DeviceService {
     boolean addDevice(DeviceDto device);
 
     boolean removeDevice(Long deviceId);
+
+    boolean userOwnsDevice(Long deviceId, String username);
+
+    boolean userOwnsDevice(String serialNo, String username);
+
+    boolean isValidReadingName(String readingName);
 }

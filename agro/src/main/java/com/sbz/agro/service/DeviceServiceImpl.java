@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.sbz.agro.dto.DeviceDto;
 import com.sbz.agro.enums.DeviceDetails;
+import com.sbz.agro.enums.DeviceReadingTypes;
 import com.sbz.agro.model.Device;
 import com.sbz.agro.model.DeviceArray;
 import com.sbz.agro.repository.DeviceArrayRepository;
@@ -92,6 +93,41 @@ public class DeviceServiceImpl implements DeviceService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public boolean userOwnsDevice(Long deviceId, String username) {
+        try {
+            Device d = deviceRepository.findById(deviceId).get();
+            if (!d.getArray().getField().getOwner().getUsername().equals(username)) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean userOwnsDevice(String serialNo, String username) {
+        try {
+            Device d = deviceRepository.findBySerialNo(serialNo);
+            if (!d.getArray().getField().getOwner().getUsername().equals(username)) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isValidReadingName(String readingName) {
+        for (DeviceReadingTypes s : DeviceReadingTypes.values()) {
+            if (s.name().equals(readingName))
+                return true;
+        }
+        return false;
     }
 
 }

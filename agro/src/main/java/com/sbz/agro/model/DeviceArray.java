@@ -3,6 +3,7 @@ package com.sbz.agro.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,7 +25,7 @@ public class DeviceArray {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "device_array_id")
     private Long id;
-    @OneToMany(mappedBy = "array", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "array", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private List<Device> devices;
     @ManyToOne
     @JoinColumn(name = "field_id", nullable = false)

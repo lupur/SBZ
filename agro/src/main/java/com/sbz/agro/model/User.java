@@ -4,8 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +28,7 @@ public class User {
     private Role role;
     @ElementCollection
     private Set<String> tokens = new HashSet<>();
-    @OneToMany(mappedBy="owner")
+    @OneToMany(mappedBy="owner", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private List<Field> fields;
     
     public User() {
