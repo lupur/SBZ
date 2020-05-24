@@ -1,4 +1,4 @@
-class Valve:
+class Actuator:
     def __init__(self, serialNumber):
         self.serialNumber = serialNumber
         self.state = "OFF"
