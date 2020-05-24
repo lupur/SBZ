@@ -18,7 +18,7 @@ stateReading = "STATE"
 
 pump0 = Actuator("Pump0000")
 rain0 = RainSensor("Rain0000")
-moist01 = MoistureSensor("Moisture0000", 50)
+moist01 = MoistureSensor("Moisture0000", 20)
 moist02 = MoistureSensor("Moisture0001", 40)
 valve01 = Actuator("Valve0000")
 valve02 = Actuator("Valve0001")
@@ -46,8 +46,8 @@ class ActuationRequestServer(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(content_length))
         actuator = actuatorsDict.get(body['serialNo'])
         if actuator:
+            print("Received request: ", str(body))
             actuator.state = body['state']
-            print(actuator.state)
         self.send_response(200)
         self.end_headers()
 
@@ -62,7 +62,7 @@ def sendReading(serialNumber, name, value):
             'serialNo': serialNumber,
             'name': name,
             'value': value,
-            'timestamp': datetime.now().strftime("%Y-%M-%dT%H:%M:%SZ")
+            'timestamp': datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         }
 
     requests.post(url,data=json.dumps(data), headers=header)
@@ -77,7 +77,6 @@ def simulateArray1():
     global valve02
 
     while True:
-        print("Will send pump with state: ", pump0.state)
         sendReading(pump0.serialNumber, statusReading, pump0.status)
         sendReading(rain0.serialNumber, statusReading, rain0.status)
         sendReading(moist01.serialNumber, statusReading, moist01.status)
@@ -120,17 +119,42 @@ def simulateArray2():
         sendReading(valve12.serialNumber, stateReading, valve12.state)
         time.sleep(5)
 
+def simulateOneSet():
+    global pump0
+    global rain0
+    global moist01
+    global valve01
+
+    while True:
+        sendReading(pump0.serialNumber, statusReading, pump0.status)
+        sendReading(rain0.serialNumber, statusReading, rain0.status)
+        sendReading(moist01.serialNumber, statusReading, moist01.status)
+        sendReading(valve01.serialNumber, statusReading, valve01.status)
+        time.sleep(1)
+
+        sendReading(pump0.serialNumber, stateReading, pump0.state)
+        sendReading(rain0.serialNumber, rainReading, rain0.raining)
+        sendReading(moist01.serialNumber, moistureReading, moist01.moistureValue)
+        sendReading(valve01.serialNumber, stateReading, valve01.state)
+        time.sleep(1)
+
+        if valve01.isOn():
+            moist01.increaseMoisture()
+        else:
+            moist01.decreaseMoisture()
 
 if __name__ == "__main__":
 
     thread1 = threading.Thread(target=actuatorServer)
-    thread2 = threading.Thread(target=simulateArray1)
-    thread3 = threading.Thread(target=simulateArray2)
+    # thread2 = threading.Thread(target=simulateArray1)
+    # thread3 = threading.Thread(target=simulateArray2)
+
+    oneSetSimulation = threading.Thread(target=simulateOneSet)
 
     thread1.start()
-    thread2.start()
-    thread3.start()
-
+    # thread2.start()
+    # thread3.start()
+    oneSetSimulation.start()
     try:
         while True:
             time.sleep(1)

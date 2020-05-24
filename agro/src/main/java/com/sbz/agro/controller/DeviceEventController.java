@@ -16,17 +16,18 @@ import com.sbz.agro.event.DeviceEvent;
 @RequestMapping("/events/devices")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DeviceEventController {
-	
-	@Autowired
-	private KieContainer kieContainer;
-	
-	private KieSession kieSession;
+
+    @Autowired
+    private KieContainer kieContainer;
+
+    private KieSession kieSession;
 
     @PutMapping
     public ResponseEntity updateCrop(@RequestBody DeviceEvent deviceEvent) {
-    	if(kieSession == null) kieSession = kieContainer.newKieSession("deviceMonitorSession");
-    	kieSession.insert(new DeviceEvent(deviceEvent));
-    	kieSession.fireAllRules();
+        if (kieSession == null)
+            kieSession = kieContainer.newKieSession("deviceMonitorSession");
+        kieSession.insert(new DeviceEvent(deviceEvent));
+        kieSession.fireAllRules();
         return ResponseEntity.ok().build();
     }
 

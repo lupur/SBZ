@@ -25,8 +25,8 @@ INSERT INTO sbz_db.agro_users (password, role, username) VALUES ('$2a$10$UcVkaNa
 INSERT INTO sbz_db.crops (crop_name) VALUES ('Corn');
 INSERT INTO sbz_db.crops (crop_name) VALUES ('Weath');
 
-INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Gornja parcela', '2020-03-20 02:00:00', '1', '1');
-INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Donja parcela', '2020-04-20 02:00:00', '1', '1');
+INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Gornja parcela', '2020-05-20 02:00:00', '1', '1');
+INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Donja parcela', '2020-05-20 02:00:00', '1', '1');
 INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('8000', 'Kocka', '2020-05-20 02:00:00', '1', '1');
 
 INSERT INTO sbz_db.device_arrays (field_id) VALUES ('1');
@@ -54,7 +54,7 @@ INSERT INTO sbz_db.devices (position, device_serial_no, device_type_id, device_a
 INSERT INTO sbz_db.devices (position, device_serial_no, device_type_id, device_array_id) VALUES ('2', 'Moisture0021', '1', '3');
 INSERT INTO sbz_db.devices (position, device_serial_no, device_type_id, device_array_id) VALUES ('2', 'Valve0021', '3', '3');
 
-INSERT INTO `sbz_db`.`growth_phases` (`moisture_min`, `moisture_max`, `phase_name`, `phase_end`, `phase_start`, `crop_id`) VALUES ('20', '50', 'Klijanje', '10', '0', '1');
+INSERT INTO `sbz_db`.`growth_phases` (`moisture_min`, `moisture_max`, `phase_name`, `phase_end`, `phase_start`, `crop_id`) VALUES ('30', '50', 'Klijanje', '10', '0', '1');
 INSERT INTO `sbz_db`.`growth_phases` (`moisture_min`, `moisture_max`, `phase_name`, `phase_end`, `phase_start`, `crop_id`) VALUES ('40', '70', 'Razvoj ploda', '20', '11', '1');
 INSERT INTO `sbz_db`.`growth_phases` (`moisture_min`, `moisture_max`, `phase_name`, `phase_end`, `phase_start`, `crop_id`) VALUES ('40', '70', 'Zetva', '30', '21', '1');
 

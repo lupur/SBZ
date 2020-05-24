@@ -1,5 +1,6 @@
 package com.sbz.agro.controller;
 
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sbz.agro.dto.ReadingDto;
+import com.sbz.agro.model.Reading;
 import com.sbz.agro.security.TokenUtil;
 import com.sbz.agro.service.AuthService;
 import com.sbz.agro.service.DeviceService;
@@ -36,14 +38,22 @@ public class ReadingController {
     @Autowired
     TokenUtil tokenUtil;
 
+    @Autowired
+    KieSession kieIrrigationSession;
+
     @PostMapping()
     public ResponseEntity addReading(@RequestBody ReadingDto newReading) {
         if (newReading == null || !newReading.isValid()) {
             return ResponseEntity.badRequest().build();
         }
-        if (!readingService.addReading(newReading)) {
+        Reading reading = readingService.addReading(newReading);
+        if (reading == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        kieIrrigationSession.insert(reading);
+        kieIrrigationSession.getAgenda().getAgendaGroup("irrigation").setFocus();
+
+        kieIrrigationSession.fireAllRules();
         return ResponseEntity.ok().build();
     }
 

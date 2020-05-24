@@ -15,3 +15,9 @@ class Actuator:
 
     def statusToOk(self):
         self.status = "OK"
+
+    def isOn(self):
+        return self.state == "ON"
+
+    def isOff(self):
+        return self.state == "OFF"
