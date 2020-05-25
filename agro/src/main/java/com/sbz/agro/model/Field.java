@@ -1,6 +1,5 @@
 package com.sbz.agro.model;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -39,10 +38,6 @@ public class Field {
     private Crop crop;
     @OneToMany(mappedBy = "field", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<DeviceArray> deviceArrays;
-//    @Column(name = "moisture_max")
-//    private Double moistureUpperThreshold;
-//    @Column(name = "moisture_min")
-//    private Double moistureLowerThreshold;
     @Column(name = "seeding_date")
     private Date seedingDate;
 
@@ -105,27 +100,27 @@ public class Field {
     }
 
     public Double getMoistureUpperThreshold() {
-    	for(GrowthPhase growthPhase : crop.getGrowthPhases()) {
-    		long diff = (new Date()).getTime() - seedingDate.getTime();
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-    		
-    		if(diffDays >= growthPhase.getPhaseStartDay() && diffDays <= growthPhase.getPhaseEndDay()) {
-    			return growthPhase.getMoistureUpperThreshold();
-    		}
-    	}
+        for (GrowthPhase growthPhase : crop.getGrowthPhases()) {
+            long diff = (new Date()).getTime() - seedingDate.getTime();
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+
+            if (diffDays >= growthPhase.getPhaseStartDay() && diffDays <= growthPhase.getPhaseEndDay()) {
+                return growthPhase.getMoistureUpperThreshold();
+            }
+        }
         return -1D;
     }
 
     public Double getMoistureLowerThreshold() {
-    	System.out.println("Size: " + crop.getGrowthPhases().size());
-    	for(GrowthPhase growthPhase : crop.getGrowthPhases()) {
-    		long diff = (new Date()).getTime() - seedingDate.getTime();
-			long diffDays = diff / (24 * 60 * 60 * 1000);
+        System.out.println("Size: " + crop.getGrowthPhases().size());
+        for (GrowthPhase growthPhase : crop.getGrowthPhases()) {
+            long diff = (new Date()).getTime() - seedingDate.getTime();
+            long diffDays = diff / (24 * 60 * 60 * 1000);
 
-			if(diffDays >= growthPhase.getPhaseStartDay() && diffDays <= growthPhase.getPhaseEndDay()) {
-    			return growthPhase.getMoistureLowerThreshold();
-    		}
-    	}
+            if (diffDays >= growthPhase.getPhaseStartDay() && diffDays <= growthPhase.getPhaseEndDay()) {
+                return growthPhase.getMoistureLowerThreshold();
+            }
+        }
         return -1D;
     }
 
@@ -136,5 +131,5 @@ public class Field {
     public void setSeedingDate(Date seedingDate) {
         this.seedingDate = seedingDate;
     }
-    
+
 }

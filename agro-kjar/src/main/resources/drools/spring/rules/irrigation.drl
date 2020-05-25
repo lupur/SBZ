@@ -8,19 +8,25 @@ import com.sbz.agro.enums.DeviceDetails;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.sbz.agro_kjar.services.ActuatorService;
+
 global Integer pumpCapacity;
+
+global ActuatorService actuatorService;
 
 
 rule "Open valve on low moisture"
     agenda-group "irrigation"
     when
-
         //Checking if its moisture reading with critical low value
-        $reading: Reading( name == DeviceReadingTypes.MOISTURE.name(),
-                           $sensor: device,
-                           device.getArray().getField().getMoistureLowerThreshold() > Double.parseDouble(value)
-                        );
-
+        $reading: Reading(  name == DeviceReadingTypes.MOISTURE.name(),
+                            $sensor: device
+                        ) over window:length(1)
+        
+         Reading(   name == DeviceReadingTypes.MOISTURE.name(),
+                    this == $reading,
+                    device.getArray().getField().getMoistureLowerThreshold() > Double.parseDouble(value)
+                )
         //Check if there was raining in the last hour
          not (Reading(
             $sensor.array.id == device.array.id,
@@ -52,21 +58,24 @@ rule "Open valve on low moisture"
         //If we want to open valve - it must be currently closed
         Reading($valveState == this, value == ReadingValues.OFF.name())
     then
-        System.out.println("-- Low moisture found, should open valve --");
-        System.out.println("-- TODO: Open valve action --");
+        System.out.println("Reading timestamp " + $reading.getTimestamp().toString() + " trigerred Open Valve");
         System.out.println(" Got valve status: " + $valveStatus.toString());
+        actuatorService.SendActuation($valve.getSerialNo(), "ON");
 end
 
 
 rule "Close valve on high moisture"
     agenda-group "irrigation"
     when
-
-        //Checking if its moisture reading with critical low value
-        $reading: Reading( name == DeviceReadingTypes.MOISTURE.name(),
-                           $sensor: device,
-                           device.getArray().getField().getMoistureUpperThreshold() < Double.parseDouble(value)
-                        );
+                //Checking if its moisture reading with critical low value
+        $reading: Reading(  name == DeviceReadingTypes.MOISTURE.name(),
+                            $sensor: device
+                        ) over window:length(1)
+        
+         Reading(   name == DeviceReadingTypes.MOISTURE.name(),
+                    this == $reading,
+                    device.getArray().getField().getMoistureUpperThreshold() < Double.parseDouble(value)
+                )
 
         //Get valve which is on the same position as sensor which sent reading
         $valve: Device( array.id == $sensor.array.id,
@@ -93,6 +102,7 @@ rule "Close valve on high moisture"
     then
         System.out.println("-- High moisture found, should close valve --");
         System.out.println("-- TODO: Close valve action --");
+        actuatorService.SendActuation($valve.getSerialNo(), "OFF");
 end
 
 rule "Open pump"
@@ -100,10 +110,16 @@ rule "Open pump"
     when
         //Received valve reading - ON
         $openValveReading: Reading(
-                            value == ReadingValues.ON.name(),
+                            name == DeviceReadingTypes.STATE.name(),
                             device.type == DeviceDetails.VALVE,
                             $valve: device
-                            )
+                            ) over window:length(1)
+                            
+        Reading( device.type == DeviceDetails.VALVE,
+                 name == DeviceReadingTypes.STATE.name(),
+                 value == ReadingValues.ON.name(),
+                 $openValveReading == this
+                )
 
         //Get pump on that array
         $pump: Device(type == DeviceDetails.PUMP,

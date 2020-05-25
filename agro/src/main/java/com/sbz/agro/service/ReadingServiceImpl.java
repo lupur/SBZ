@@ -22,9 +22,9 @@ public class ReadingServiceImpl implements ReadingService {
     DeviceRepository deviceRepository;
 
     @Override
-    public boolean addReading(ReadingDto newReading) {
+    public Reading addReading(ReadingDto newReading) {
         if (newReading == null)
-            return false;
+            return null;
 
         try {
             Device device = deviceRepository.findBySerialNo(newReading.getSerialNo());
@@ -34,9 +34,9 @@ public class ReadingServiceImpl implements ReadingService {
             reading.setTimestamp(newReading.getTimestamp());
             reading.setValue(newReading.getValue());
             readingRepository.save(reading);
-            return true;
+            return reading;
         } catch (Exception e) {
-            return false;
+            return null;
         }
     }
 

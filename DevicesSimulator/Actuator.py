@@ -1,4 +1,4 @@
-class Valve:
+class Actuator:
     def __init__(self, serialNumber):
         self.serialNumber = serialNumber
         self.state = "OFF"
@@ -15,3 +15,9 @@ class Valve:
 
     def statusToOk(self):
         self.status = "OK"
+
+    def isOn(self):
+        return self.state == "ON"
+
+    def isOff(self):
+        return self.state == "OFF"
