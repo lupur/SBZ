@@ -26,7 +26,7 @@ public class DeviceArray {
     @Column(name = "device_array_id")
     private Long id;
     @OneToMany(mappedBy = "array", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
-    private List<Device> devices;
+    private List<Device> devices = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "field_id", nullable = false)
     private Field field;

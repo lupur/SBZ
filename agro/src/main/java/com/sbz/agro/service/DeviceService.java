@@ -1,13 +1,14 @@
 package com.sbz.agro.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.sbz.agro.dto.DeviceDto;
 import com.sbz.agro.enums.DeviceDetails;
 
 public interface DeviceService {
 
-    List<DeviceDto> getArrayDevices(Long arrayId);
+    Set<DeviceDto> getArrayDevices(Long arrayId);
 
     DeviceDto getDeviceFromArray(Long arrayId, Long deviceId);
 

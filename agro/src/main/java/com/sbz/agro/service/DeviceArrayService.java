@@ -18,4 +18,14 @@ public interface DeviceArrayService {
 
     DeviceArrayDto getArrayOfField(Long fieldId, Long arrayId);
 
+	boolean addArray(Long fieldId, String pumpEUI, String rainEUI);
+
+	boolean editArray(Long arrayId, String pumpEUI, String rainEUI);
+
+	boolean addSet(Long arrayId, String pumpEUI, String rainEUI);
+	
+	boolean editSet(Long arrayId, Integer position, String pumpEUI, String rainEUI);
+	
+	boolean removeSet(Long arrayId, Integer position);
+
 }
