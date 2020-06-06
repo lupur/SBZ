@@ -23,3 +23,5 @@
 hs_err_pid*
 
 agro/src/main/resources/application.properties
+DevicesSimulator/.idea/workspace.xml
+DevicesSimulator/__pycache__/Actuator.cpython-36.pyc
