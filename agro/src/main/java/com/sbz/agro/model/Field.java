@@ -2,7 +2,9 @@ package com.sbz.agro.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,12 +36,8 @@ public class Field {
     @ManyToOne
     @JoinColumn(name = "crop_id", nullable = false)
     private Crop crop;
-    @OneToMany(mappedBy = "field", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    private List<DeviceArray> deviceArrays;
-//    @Column(name = "moisture_max")
-//    private Double moistureUpperThreshold;
-//    @Column(name = "moisture_min")
-//    private Double moistureLowerThreshold;
+    @OneToMany(mappedBy = "field", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+    private Set<DeviceArray> deviceArrays;
     @Column(name = "seeding_date")
     private Date seedingDate;
 
@@ -63,17 +61,17 @@ public class Field {
         this.name = name;
     }
 
-    public List<DeviceArray> getDeviceArrays() {
+    public Set<DeviceArray> getDeviceArrays() {
         return deviceArrays;
     }
 
-    public void setDeviceArrays(List<DeviceArray> deviceArrays) {
+    public void setDeviceArrays(Set<DeviceArray> deviceArrays) {
         this.deviceArrays = deviceArrays;
     }
 
     public void addDeviceArray(DeviceArray deviceArray) {
         if (this.deviceArrays == null)
-            this.deviceArrays = new ArrayList<>();
+            this.deviceArrays = new HashSet<>();
         this.deviceArrays.add(deviceArray);
     }
 

@@ -1,5 +1,6 @@
 package com.sbz.agro.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sbz.agro.model.Device;
@@ -8,7 +9,7 @@ import com.sbz.agro.model.DeviceArray;
 public class DeviceArrayDto {
 
     private Long id;
-    private List<Device> devices;
+    private List<DeviceDto> devices = new ArrayList<>();
     private Long fieldId;
 
     public DeviceArrayDto(DeviceArray deviceArray) {
@@ -18,7 +19,9 @@ public class DeviceArrayDto {
         }
 
         this.id = deviceArray.getId();
-        this.devices = deviceArray.getDevices();
+        for(Device device : deviceArray.getDevices()) {
+        	devices.add(new DeviceDto(device));
+        }
         this.fieldId = deviceArray.getField().getId();
     }
 
@@ -35,11 +38,11 @@ public class DeviceArrayDto {
         this.id = id;
     }
 
-    public List<Device> getDevices() {
+    public List<DeviceDto> getDevices() {
         return devices;
     }
 
-    public void setDevices(List<Device> devices) {
+    public void setDevices(List<DeviceDto> devices) {
         this.devices = devices;
     }
 

@@ -63,6 +63,24 @@ public class FieldController {
 
         return ResponseEntity.ok().body(fieldService.getField(fieldId));
     }
+    
+    @GetMapping(value = "{fieldId}/items")
+    public ResponseEntity getFieldItems(@RequestHeader("Token") String token, @PathVariable Long fieldId) {
+        if (!authService.atLeastUser(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        if (!fieldService.fieldExists(fieldId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String username = tokenUtil.getUsernameFromToken(token);
+        if (!authService.isAdmin(token) && !fieldService.userOwnsField(username, fieldId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok().body(fieldService.getFieldItems(fieldId));
+    }
 
     @PostMapping
     public ResponseEntity addField(@RequestHeader("Token") String token, @RequestBody FieldDto newField) {

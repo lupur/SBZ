@@ -1,7 +1,9 @@
 package com.sbz.agro.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,9 @@ public class DeviceServiceImpl implements DeviceService {
     DeviceRepository deviceRepository;
 
     @Override
-    public List<DeviceDto> getArrayDevices(Long arrayId) {
-        List<DeviceDto> devices = new ArrayList<DeviceDto>();
-        List<Device> deviceDB = deviceRepository.findByArray_Id(arrayId);
+    public Set<DeviceDto> getArrayDevices(Long arrayId) {
+        Set<DeviceDto> devices = new HashSet<>();
+        Set<Device> deviceDB = deviceRepository.findByArray_Id(arrayId);
 
         if (deviceDB == null)
             return null;
