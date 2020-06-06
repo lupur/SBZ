@@ -37,16 +37,15 @@ public class IrrigationTests {
 
     // Setting up KIE
     KieServices ks = KieServices.Factory.get();
-    KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("com.sbz","agro-kjar", "0.0.1-SNAPSHOT"));
+    KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("com.sbz", "agro-kjar", "0.0.1-SNAPSHOT"));
     KieScanner kScanner = ks.newKieScanner(kContainer);
     KieSession kieSession = kContainer.newKieSession("irrigationSession");
     KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
 
-
     void initKie() {
         kScanner.start(10_000);
         kieSession.setGlobal("pumpCapacity", 5);
-        config.setOption( EventProcessingOption.STREAM );
+        config.setOption(EventProcessingOption.STREAM);
     }
 
     @Test
@@ -86,10 +85,10 @@ public class IrrigationTests {
         Device valve1 = new Device("Valve1", DeviceDetails.VALVE, array1, 1);
         Device pump = new Device("Pump1", DeviceDetails.PUMP, array1, 0);
 
-        //Reading with low moisture level
+        // Reading with low moisture level
         Reading r1 = new Reading(moistureSensor1, DeviceReadingTypes.MOISTURE.name(), "10.0", new Date());
         r1.setId(1l);
-        //Setting rain sensor readings
+        // Setting rain sensor readings
         Reading rain1 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", dateNow);
         Reading rain2 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", dateNow);
         Reading rain3 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", dateNow);
@@ -97,19 +96,22 @@ public class IrrigationTests {
         rain2.setId(11l);
         rain3.setId(12l);
 
-        //Setting valve status
-        Reading valStatus1 = new Reading(valve1, DeviceReadingTypes.STATUS.name(), ReadingValues.ERROR.name(), dateHourAgo);
+        // Setting valve status
+        Reading valStatus1 = new Reading(valve1, DeviceReadingTypes.STATUS.name(), ReadingValues.ERROR.name(),
+                dateHourAgo);
         Reading valStatus2 = new Reading(valve1, DeviceReadingTypes.STATUS.name(), ReadingValues.OK.name(), dateNow);
         valStatus1.setId(20l);
         valStatus2.setId(21l);
 
-        //Setting valve opened/closed state
-        Reading valOpenStatus1 = new Reading(valve1, DeviceReadingTypes.STATE.name(), ReadingValues.ON.name(), dateTwoHoursAgo);
-        Reading valOpenStatus2 = new Reading(valve1, DeviceReadingTypes.STATE.name(), ReadingValues.OFF.name(), dateNow);
+        // Setting valve opened/closed state
+        Reading valOpenStatus1 = new Reading(valve1, DeviceReadingTypes.STATE.name(), ReadingValues.ON.name(),
+                dateTwoHoursAgo);
+        Reading valOpenStatus2 = new Reading(valve1, DeviceReadingTypes.STATE.name(), ReadingValues.OFF.name(),
+                dateNow);
         valOpenStatus1.setId(30l);
         valOpenStatus2.setId(31l);
 
-        //Adding events to kie session, and firing rules
+        // Adding events to kie session, and firing rules
         kieSession.insert(r1);
         kieSession.insert(valve1);
         kieSession.insert(pump);
@@ -118,14 +120,13 @@ public class IrrigationTests {
         kieSession.insert(rain2);
         kieSession.insert(rain3);
 
-
         kieSession.insert(valStatus1);
         kieSession.insert(valStatus2);
         kieSession.insert(valOpenStatus1);
         kieSession.insert(valOpenStatus2);
 
         kieSession.getAgenda().getAgendaGroup("irrigation").setFocus();
-        kieSession.fireAllRules( );
+        kieSession.fireAllRules();
     }
 
     @Test
@@ -164,10 +165,10 @@ public class IrrigationTests {
         Device valve1 = new Device("Valve1", DeviceDetails.VALVE, array1, 1);
         Device pump = new Device("Pump1", DeviceDetails.PUMP, array1, 0);
 
-        //Reading with low moisture level
+        // Reading with low moisture level
         Reading r1 = new Reading(moistureSensor1, DeviceReadingTypes.MOISTURE.name(), "90.0", new Date());
         r1.setId(1l);
-        //Setting rain sensor readings
+        // Setting rain sensor readings
         Reading rain1 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", dateNow);
         Reading rain2 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", dateNow);
         Reading rain3 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", dateNow);
@@ -175,19 +176,21 @@ public class IrrigationTests {
         rain2.setId(11l);
         rain3.setId(12l);
 
-        //Setting valve status
+        // Setting valve status
         Reading valStatus1 = new Reading(valve1, DeviceReadingTypes.STATUS.name(), ReadingValues.OK.name(), dateNow);
-        Reading valStatus2 = new Reading(valve1, DeviceReadingTypes.STATUS.name(), ReadingValues.OK.name(), dateHourAgo);
+        Reading valStatus2 = new Reading(valve1, DeviceReadingTypes.STATUS.name(), ReadingValues.OK.name(),
+                dateHourAgo);
         valStatus1.setId(20l);
         valStatus2.setId(21l);
 
-        //Setting valve opened/closed state
-        Reading valOpenStatus1 = new Reading(valve1, DeviceReadingTypes.STATE.name(), ReadingValues.OFF.name(), dateTwoHoursAgo);
+        // Setting valve opened/closed state
+        Reading valOpenStatus1 = new Reading(valve1, DeviceReadingTypes.STATE.name(), ReadingValues.OFF.name(),
+                dateTwoHoursAgo);
         Reading valOpenStatus2 = new Reading(valve1, DeviceReadingTypes.STATE.name(), ReadingValues.ON.name(), dateNow);
         valOpenStatus1.setId(30l);
         valOpenStatus2.setId(31l);
 
-        //Adding events to kie session, and firing rules
+        // Adding events to kie session, and firing rules
         kieSession.insert(r1);
         kieSession.insert(valve1);
         kieSession.insert(pump);
@@ -196,20 +199,19 @@ public class IrrigationTests {
         kieSession.insert(rain2);
         kieSession.insert(rain3);
 
-
         kieSession.insert(valStatus1);
         kieSession.insert(valStatus2);
         kieSession.insert(valOpenStatus1);
         kieSession.insert(valOpenStatus2);
 
         kieSession.getAgenda().getAgendaGroup("irrigation").setFocus();
-        kieSession.fireAllRules( );
+        kieSession.fireAllRules();
     }
-    
+
     @Test
     void testPumpOpen() {
 
-    	System.out.println("**************************");
+        System.out.println("**************************");
         System.out.println("TEST Open pump:");
         System.out.println("**************************");
         initKie();
@@ -218,7 +220,7 @@ public class IrrigationTests {
 
         Device pump1 = new Device("Pump1", DeviceDetails.PUMP, array1, 0);
         pump1.setId(11l);
-        
+
         Device val1 = new Device("Val1", DeviceDetails.VALVE, array1, 1);
         Device val2 = new Device("Val1", DeviceDetails.VALVE, array1, 2);
         Device val3 = new Device("Val1", DeviceDetails.VALVE, array1, 3);
@@ -261,21 +263,21 @@ public class IrrigationTests {
         kieSession.insert(valOpenStatus4);
 
         kieSession.getAgenda().getAgendaGroup("irrigation").setFocus();
-        kieSession.fireAllRules( );
+        kieSession.fireAllRules();
 
     }
-    
+
     @Test
     void testCloseValveWhenRaining() {
-    	System.out.println("**************************");
+        System.out.println("**************************");
         System.out.println("TEST Close valves when raining:");
         System.out.println("**************************");
-    	initKie();
-    	DeviceArray array1 = new DeviceArray();
+        initKie();
+        DeviceArray array1 = new DeviceArray();
 
         Device rainSensor = new Device("Rain1", DeviceDetails.RAIN_SENSOR, array1, 0);
 
-        //Setting rain sensor readings
+        // Setting rain sensor readings
         Reading rain1 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "false", twoDaysAgo);
         Reading rain2 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "true", dateNow);
         Reading rain3 = new Reading(rainSensor, DeviceReadingTypes.RAIN.name(), "true", dateNow);
@@ -287,6 +289,6 @@ public class IrrigationTests {
         kieSession.insert(rain2);
         kieSession.insert(rain3);
         kieSession.getAgenda().getAgendaGroup("irrigation").setFocus();
-        kieSession.fireAllRules( );
+        kieSession.fireAllRules();
     }
 }
