@@ -1,4 +1,4 @@
-package drools.spring.rules;
+/*package drools.spring.rules;
 
 import com.sbz.agro.event.DeviceEvent;
 import com.sbz.agro.model.Reading;
@@ -77,9 +77,9 @@ rule "Device error report"
     then
 
 end
-*/
+
 
 rule "New device event"
     when $de1: DeviceEvent()
     then System.out.println($de1);
-end
+end*/

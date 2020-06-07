@@ -63,7 +63,7 @@ public class FieldController {
 
         return ResponseEntity.ok().body(fieldService.getField(fieldId));
     }
-    
+
     @GetMapping(value = "{fieldId}/items")
     public ResponseEntity getFieldItems(@RequestHeader("Token") String token, @PathVariable Long fieldId) {
         if (!authService.atLeastUser(token)) {

@@ -1,5 +1,6 @@
 package com.sbz.agro;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.kie.api.KieBaseConfiguration;
@@ -74,6 +75,8 @@ public class AgroApplication {
         for (Field f : fields) {
             kieSession.insert(f);
         }
+
+        kieSession.setGlobal("valveStateMap", new HashMap<>());
 
         kieSession.fireAllRules();
         return kieSession;

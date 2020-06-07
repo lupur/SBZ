@@ -7,12 +7,18 @@ import com.sbz.agro.enums.ReadingValues;
 import com.sbz.agro.enums.DeviceDetails;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map
 
 import com.sbz.agro_kjar.services.ActuatorService;
+import com.sbz.agro_kjar.helpers.DeviceKey;
+import com.sbz.agro_kjar.helpers.Utils;
 
 global Integer pumpCapacity;
 
 global ActuatorService actuatorService;
+
+global Map<DeviceKey, Boolean> valveStateMap;// = new HashMap<DeviceKey, boolean>();
 
 
 rule "Open valve on low moisture"
@@ -58,11 +64,11 @@ rule "Open valve on low moisture"
         //If we want to open valve - it must be currently closed
         Reading($valveState == this, value == ReadingValues.OFF.name())
     then
-        System.out.println("Reading timestamp " + $reading.getTimestamp().toString() + " trigerred Open Valve");
-        System.out.println(" Got valve status: " + $valveStatus.toString());
+        System.out.println("-- Low moisture found, should open valve --");
         actuatorService.SendActuation($valve.getSerialNo(), "ON");
+        DeviceKey dk = new DeviceKey($valve.getArray().getId(), $valve.getId());
+        valveStateMap.put(dk, true);
 end
-
 
 rule "Close valve on high moisture"
     agenda-group "irrigation"
@@ -101,8 +107,9 @@ rule "Close valve on high moisture"
         Reading($valveState == this, value == ReadingValues.ON.name())
     then
         System.out.println("-- High moisture found, should close valve --");
-        System.out.println("-- TODO: Close valve action --");
         actuatorService.SendActuation($valve.getSerialNo(), "OFF");
+        DeviceKey dk = new DeviceKey($valve.getArray().getId(), $valve.getId());
+        valveStateMap.put(dk, false);
 end
 
 rule "Open pump"
@@ -123,7 +130,8 @@ rule "Open pump"
 
         //Get pump on that array
         $pump: Device(type == DeviceDetails.PUMP,
-                    array == $valve.array);
+                      array.getId() == $valve.getArray().getId(),
+                      array.getField().getId() == $valve.getArray().getField().getId() );
 
         //Getting last status of pump
         $pumpStatus: Reading(
@@ -145,7 +153,53 @@ rule "Open pump"
 
     then
         System.out.println("-- Valve in array exists, should open pump--");
-        System.out.println("-- TODO: Open pump action --");
+        actuatorService.SendActuation($pump.getSerialNo(), "ON");
+end
+
+rule "Close pump"
+    agenda-group "irrigation"
+    when
+        //Received valve reading - OFF
+        $openValveReading: Reading(
+                            name == DeviceReadingTypes.STATE.name(),
+                            device.type == DeviceDetails.VALVE,
+                            $valve: device
+                            ) over window:length(1)
+                            
+        Reading( device.type == DeviceDetails.VALVE,
+                 name == DeviceReadingTypes.STATE.name(),
+                 value == ReadingValues.OFF.name(),
+                 $openValveReading == this
+                )
+                
+        //Get pump on that array
+        $pump: Device(type == DeviceDetails.PUMP,
+                      array.getId() == $valve.getArray().getId(),
+                      array.getField().getId() == $valve.getArray().getField().getId() );
+
+        //Getting last status of pump
+        $pumpStatus: Reading(
+                   device.id == $pump.id,
+                   name == DeviceReadingTypes.STATUS.name()
+                ) over window:length(1)
+        //Last status must be OK
+        Reading($pumpStatus == this, value == ReadingValues.OK.name());
+        
+        //Getting last on/off state of the pump
+        $pumpState: Reading(
+                        device.id == $pump.id,
+                        device.type == DeviceDetails.PUMP,
+                        name ==  DeviceReadingTypes.STATE.name()
+                    ) over window:length(1)
+        
+        //If we want to close pump - it must be currently opened
+        Reading($pumpState == this, value == ReadingValues.ON.name());
+        
+        // In order to close pump - all valves must be off
+        $number : Integer( this == 0 ) from Utils.openedValvesOfArray($valve.getArray().getId(), valveStateMap);
+    then
+        System.out.println("-- No opened valve in array, should close pump--");
+        actuatorService.SendActuation($pump.getSerialNo(), "OFF");
 end
 
 rule "Close valves since it is raining"
@@ -161,8 +215,7 @@ rule "Close valves since it is raining"
             $sensor.array.id == device.array.id,
             value=="false",
             name == DeviceReadingTypes.RAIN.name()
-          ) over window:time(90m))
+          ) over window:time(30s)) // We changed from 90m to 30s for testing purposes (dont want to wait 90 minutes)
     then
         System.out.println("-- It is raining for half an hour - close valves --");
-        System.out.println("-- TODO: Open pump action --");
 end

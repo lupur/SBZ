@@ -4,11 +4,14 @@ class RainSensor:
         self.raining = False
         self.status = 'OK'
 
-    def isRaining(self):
+    def setRain(self):
         self.raining = True
 
-    def isNotRaining(self):
+    def setNoRain(self):
         self.raining = False
+
+    def isItRaining(self):
+        return self.raining
 
     def statusToError(self):
         self.status = "ERROR"

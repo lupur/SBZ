@@ -50,6 +50,7 @@ public class ReadingController {
         if (reading == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
         kieIrrigationSession.insert(reading);
         kieIrrigationSession.getAgenda().getAgendaGroup("irrigation").setFocus();
 

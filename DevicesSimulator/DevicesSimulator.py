@@ -64,9 +64,10 @@ def sendReading(serialNumber, name, value):
             'value': value,
             'timestamp': datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         }
-
-    requests.post(url,data=json.dumps(data), headers=header)
-
+    try:
+        requests.post(url,data=json.dumps(data), headers=header)
+    except:
+        return
 
 def simulateArray1():
     global pump0
@@ -76,6 +77,7 @@ def simulateArray1():
     global valve01
     global valve02
 
+    rain0.setRain()
     while True:
         sendReading(pump0.serialNumber, statusReading, pump0.status)
         sendReading(rain0.serialNumber, statusReading, rain0.status)
