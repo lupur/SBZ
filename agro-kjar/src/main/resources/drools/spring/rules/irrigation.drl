@@ -14,6 +14,10 @@ import com.sbz.agro_kjar.services.ActuatorService;
 import com.sbz.agro_kjar.helpers.DeviceKey;
 import com.sbz.agro_kjar.helpers.Utils;
 
+declare Reading
+    @role(event)
+end
+
 global Integer pumpCapacity;
 
 global ActuatorService actuatorService;
@@ -36,9 +40,9 @@ rule "Open valve on low moisture"
         //Check if there was raining in the last hour
          not (Reading(
             $sensor.array.id == device.array.id,
-            value=="true",
+            value == ReadingValues.ON.name(),
             name == DeviceReadingTypes.RAIN.name()
-          ) over window:time(1h))
+          ) over window:time(2s))
 
         //Get valve which is on the same position as sensor which sent reading
         $valve: Device(
@@ -207,15 +211,27 @@ rule "Close valves since it is raining"
     when
         //Checking if its moisture reading with critical low value
         $reading: Reading( name == DeviceReadingTypes.RAIN.name(),
-                           $sensor: device
+                           $sensor: device,
+                           value == ReadingValues.ON.name()
                         );
                         
         //There should be not a single false value
-         not (Reading(
-            $sensor.array.id == device.array.id,
-            value=="false",
-            name == DeviceReadingTypes.RAIN.name()
-          ) over window:time(30s)) // We changed from 90m to 30s for testing purposes (dont want to wait 90 minutes)
+        $sizeOfArray: Number( intValue == 0) from accumulate(
+            $r: Reading($sensor.array.id == device.array.id,
+                        value == ReadingValues.OFF.name(),
+                        name == DeviceReadingTypes.RAIN.name()
+                        ) over window:time( 10s ),
+                    count($r)
+                    )
+        // In order to initiate closing - must have some valve opened
+        $number : Integer( this > 0 ) from Utils.openedValvesOfArray($sensor.getArray().getId(), valveStateMap);
+
     then
-        System.out.println("-- It is raining for half an hour - close valves --");
+        System.out.println("-- It is raining for half an hour - close valves --   " + $sizeOfArray);
+        
+        for(Device val : $sensor.getArray().getValves()) {
+            DeviceKey dk = new DeviceKey($sensor.getArray().getId(), val.getId());
+            valveStateMap.put(dk, false);
+            actuatorService.SendActuation(val.getSerialNo(), "OFF");
+        }
 end

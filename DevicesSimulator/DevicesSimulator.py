@@ -77,7 +77,6 @@ def simulateArray1():
     global valve01
     global valve02
 
-    rain0.setRain()
     while True:
         sendReading(pump0.serialNumber, statusReading, pump0.status)
         sendReading(rain0.serialNumber, statusReading, rain0.status)
@@ -127,6 +126,8 @@ def simulateOneSet():
     global moist01
     global valve01
 
+    rain0.setNoRain()
+    # rain0.setRain()
     while True:
         sendReading(pump0.serialNumber, statusReading, pump0.status)
         sendReading(rain0.serialNumber, statusReading, rain0.status)

@@ -51,10 +51,13 @@ public class ReadingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        kieIrrigationSession.insert(reading);
         kieIrrigationSession.getAgenda().getAgendaGroup("irrigation").setFocus();
+        kieIrrigationSession.insert(reading);
 
-        kieIrrigationSession.fireAllRules();
+//        EntryPoint irrigationStream = kieIrrigationSession.getEntryPoint("Irrigation");
+        kieIrrigationSession.insert(reading);
+//        kieIrrigationSession.fireAllRules();
+
         return ResponseEntity.ok().build();
     }
 

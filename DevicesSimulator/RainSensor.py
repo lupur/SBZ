@@ -1,17 +1,17 @@
 class RainSensor:
     def __init__(self, serialNumber):
         self.serialNumber = serialNumber
-        self.raining = False
+        self.raining = "OFF"
         self.status = 'OK'
 
     def setRain(self):
-        self.raining = True
+        self.raining = "ON"
 
     def setNoRain(self):
-        self.raining = False
+        self.raining = "OFF"
 
     def isItRaining(self):
-        return self.raining
+        return self.raining == "ON"
 
     def statusToError(self):
         self.status = "ERROR"

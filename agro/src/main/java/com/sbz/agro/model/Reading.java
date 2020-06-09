@@ -1,5 +1,7 @@
 package com.sbz.agro.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,9 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Date;
 
-import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
@@ -18,7 +18,6 @@ import org.kie.api.definition.type.Timestamp;
 @Table(name = "device_readings")
 @Role(Role.Type.EVENT)
 @Timestamp("timestamp")
-@Expires("1h")
 public class Reading {
 
     @Id
@@ -32,7 +31,7 @@ public class Reading {
 
     @Column(name = "device_reading_name")
     private String name;
-    
+
     @Column(name = "device_reading_value")
     private String value;
 
@@ -40,7 +39,6 @@ public class Reading {
     private Date timestamp;
 
     public Reading() {
-
     }
 
     public Reading(Device device, String name, String value, Date timestamp) {
@@ -50,9 +48,7 @@ public class Reading {
         this.timestamp = timestamp;
     }
 
-
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -86,17 +82,16 @@ public class Reading {
 
     public String getValue() {
         return value;
-        }
+    }
 
     public void setValue(String value) {
         this.value = value;
-        }
+    }
 
     @Override
     public String toString() {
         return "Reading [id=" + id + ", device=" + device + ", name=" + name + ", value=" + value + ", timestamp="
                 + timestamp + "]";
-}
-
+    }
 
 }

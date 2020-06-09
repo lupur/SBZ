@@ -1,0 +1,20 @@
+template header
+devicePrefix
+
+package drools.template;
+
+import com.sbz.agro.model.Device;
+
+template "device-supported-rules"
+
+rule "Categorize Devices_@{devicePrefix}"
+no-loop true
+when
+    $d: Device( serialNo.contains("@{devicePrefix}"))
+then
+    modify ($d){ setId(200l)};
+    System.out.println("Device with type @{devicePrefix} found.");
+end
+
+end template
+

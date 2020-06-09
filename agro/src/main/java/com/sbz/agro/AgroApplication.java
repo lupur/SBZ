@@ -3,14 +3,10 @@ package com.sbz.agro;
 import java.util.HashMap;
 import java.util.List;
 
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,6 +24,48 @@ public class AgroApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AgroApplication.class, args);
+
+//        System.out.println("********************************************");
+////        KieServices ks = KieServices.Factory.get();
+////        KieContainer kc = ks.newKieContainer(ks.newReleaseId("com.sbz", "agro-kjar", "0.0.1-SNAPSHOT"));
+////        KieSession kieSession = kc.newKieSession("irrigationSession");
+//
+//        List<String> supportedDevices = new ArrayList();
+//        supportedDevices.add("PUMP");
+//
+//        KieSession kieSession = TemplateService.GenerateRules(supportedDevices);
+//
+//        Device d0 = new Device();
+//        d0.setId(-1l);
+//        d0.setSerialNo("PUMP_2212");
+//
+//        Device d1 = new Device();
+//        d1.setId(-1l);
+//        d1.setSerialNo("VALVE_2212");
+//
+//        kieSession.insert(d0);
+//        kieSession.insert(d1);
+//        kieSession.fireAllRules();
+//
+//        System.out.println("PUMP ID : " + d0.getId());
+//        System.out.println("VALVE ID : " + d1.getId());
+//
+//        supportedDevices.add("VALVE");
+//        kieSession = TemplateService.GenerateRules(supportedDevices);
+//        d0 = new Device();
+//        d0.setId(-1l);
+//        d0.setSerialNo("PUMP_weqw");
+//
+//        d1 = new Device();
+//        d1.setId(-1l);
+//        d1.setSerialNo("VALVE_2212");
+//
+//        kieSession.insert(d0);
+//        kieSession.insert(d1);
+//        kieSession.fireAllRules();
+//
+//        System.out.println("PUMP ID : " + d0.getId());
+//        System.out.println("VALVE ID : " + d1.getId());
     }
 
     @Autowired
@@ -50,16 +88,26 @@ public class AgroApplication {
 
     @Bean
     public KieSession kieIrrigationSession() {
+
         KieServices ks = KieServices.Factory.get();
-        KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("com.sbz", "agro-kjar", "0.0.1-SNAPSHOT"));
-        KieScanner kScanner = ks.newKieScanner(kContainer);
-        KieSession kieSession = kContainer.newKieSession("irrigationSession");
+        KieContainer kc = ks.newKieContainer(ks.newReleaseId("com.sbz", "agro-kjar", "0.0.1-SNAPSHOT"));
+        KieSession kieSession = kc.newKieSession("irrigationSession");
 
-        KieSessionConfiguration sessionConfig = KieServices.Factory.get().newKieSessionConfiguration();
-        sessionConfig.setOption(ClockTypeOption.get("realtime"));
+        new Thread() {
+            @Override
+            public void run() {
+                kieSession.fireUntilHalt();
+            }
+        }.start();
 
-        KieBaseConfiguration baseConfig = KieServices.Factory.get().newKieBaseConfiguration();
-        baseConfig.setOption(EventProcessingOption.STREAM);
+//        KieServices ks = KieServices.Factory.get();
+//        KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("com.sbz", "agro-kjar", "0.0.1-SNAPSHOT"));
+//
+//        KieSession kieSession = kContainer.newKieSession("irrigationSession");
+
+        kieSession.setGlobal("valveStateMap", new HashMap<>());
+
+//        EntryPoint irrigationStream = kieSession.getEntryPoint("Irrigation");
 
         List<Device> devices = deviceRepository.findAll();
         for (Device d : devices) {
@@ -76,9 +124,7 @@ public class AgroApplication {
             kieSession.insert(f);
         }
 
-        kieSession.setGlobal("valveStateMap", new HashMap<>());
-
-        kieSession.fireAllRules();
+//        kieSession.fireAllRules();
         return kieSession;
     }
 }
