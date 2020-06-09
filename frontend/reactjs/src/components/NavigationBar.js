@@ -43,6 +43,7 @@ class NavigationBar extends React.Component {
                 </Link>
                
                <Nav className="mr-auto">
+                    <Link to={"/dashboard"} className="nav-link">Dashboard</Link>
                    { this.state.isAdmin ? <Link to={"/users"} className="nav-link">Users</Link> : null}
                    { this.state.isAdmin ?<Link to={"/crops"} className="nav-link">Crops</Link> : null}
                    <Link to={"/fields"} className="nav-link">Fields</Link>

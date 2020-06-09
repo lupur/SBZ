@@ -1,6 +1,7 @@
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
 import React from 'react';
+import * as V from 'victory';
 
 import './App.css';
 
@@ -9,7 +10,9 @@ import {Router, Switch, Route} from 'react-router-dom'
 
 import NavigationBar from './components/NavigationBar';
 import Welcome from './components/Welcome';
+import Dashboard from './components/Dashboard';
 import Footer from './components/Footer';
+import Array from './components/Array';
 import Users from './components/Users';
 import Crops from './components/Crops'
 import Login from './components/Login'
@@ -20,6 +23,7 @@ import {authService} from './services/authService'
 import {Role} from './helpers/role'
 import {history} from './helpers/history'
 import {PrivateRoute} from './components/PrivateRoute'
+import {Chart} from './components/Chart'
 class App extends React.Component {
 
     constructor(props) {
@@ -48,11 +52,12 @@ class App extends React.Component {
                 { currentUser &&
                 <NavigationBar/>
                 }
-                <Container>
+                <Container className="mw-100">
                     <Row>
                         <Col lg={12} style={this.marginTop}>
                             <Switch>
                                 <PrivateRoute path="/" exact component={Welcome}/>
+                                <PrivateRoute path="/dashboard" exact component={Dashboard}/>
                                 <PrivateRoute path="/users" roles={[Role.ADMIN]}  component={Users}/>
                                 <PrivateRoute exact path="/crops" roles={[Role.ADMIN]}  component={Crops}/>
                                 <PrivateRoute exact path="/fields" component={Fields}/>
