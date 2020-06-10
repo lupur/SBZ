@@ -24,7 +24,7 @@ class Chart extends React.Component {
       this.setState({data: data});
       response.forEach(element => {
         let y = element.value;
-        if(this.readingType === 'STATE') y = element.value === 'ON' ? '1' : '0';
+        if(this.readingType === 'STATE' || this.readingType === 'RAIN') y = element.value === 'ON' ? '1' : '0';
         data.push({x: new Date(element.timestamp), y: parseFloat(y)})
       });
       this.setState({data: data});
