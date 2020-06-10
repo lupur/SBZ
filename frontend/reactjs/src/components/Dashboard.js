@@ -94,7 +94,7 @@ class Dashboard extends React.Component {
                             </div>
                             <div className="col-lg-6">
                                 Rain status
-                                {this.state.selectedRain ? <Chart deviceEUI ={this.state.selectedRain} readingType='STATE'></Chart> : null}
+                                {this.state.selectedRain ? <Chart deviceEUI ={this.state.selectedRain} readingType='RAIN'></Chart> : null}
                             </div>
                         </div>
                         <div className="row">
