@@ -13,6 +13,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "bootstrap-treeview": "^1.2.0",
+    "bower": "^1.8.8",
     "cors": "^2.8.5",
     "create-react-class": "^15.6.3",
     "devextreme": "20.1-stable",
@@ -25,7 +26,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "react-simple-tree-menu": "^1.1.15"
+    "react-simple-tree-menu": "^1.1.15",
+    "victory": "^34.3.11"
   },
   "scripts": {
     "start": "react-scripts start",
