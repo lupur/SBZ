@@ -23,10 +23,12 @@ class Chart extends React.Component {
       let data = [];
       this.setState({data: data});
       response.forEach(element => {
-        data.push({x: new Date(element.timestamp), y: parseFloat(element.value)})
+        let y = element.value;
+        if(this.readingType === 'STATE') y = element.value === 'ON' ? '1' : '0';
+        data.push({x: new Date(element.timestamp), y: parseFloat(y)})
       });
       this.setState({data: data});
-      setInterval(this.getReadings, 10000);
+      setInterval(this.getReadings, 2000);
   });
   }
 
