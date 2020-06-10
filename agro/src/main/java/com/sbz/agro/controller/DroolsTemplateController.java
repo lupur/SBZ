@@ -68,11 +68,11 @@ public class DroolsTemplateController {
         if (supportedDevices == null)
             ResponseEntity.ok().build();
 
-        boolean alreadyExists = true;
+        boolean alreadyExists = false;
         for (String d : supportedDevices) {
             if (d.equals(device)) {
                 supportedDevices.remove(d);
-                alreadyExists = false;
+                alreadyExists = true;
                 break;
             }
         }

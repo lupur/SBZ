@@ -46,6 +46,7 @@ class NavigationBar extends React.Component {
                     <Link to={"/dashboard"} className="nav-link">Dashboard</Link>
                    { this.state.isAdmin ? <Link to={"/users"} className="nav-link">Users</Link> : null}
                    { this.state.isAdmin ?<Link to={"/crops"} className="nav-link">Crops</Link> : null}
+                   { this.state.isAdmin ?<Link to={"/deviceTypes"} className="nav-link">Device Types</Link> : null}
                    <Link to={"/fields"} className="nav-link">Fields</Link>
                    <Link to={"/login"} className="nav-link" onClick={this.logout}>Logout</Link>
                 </Nav>
