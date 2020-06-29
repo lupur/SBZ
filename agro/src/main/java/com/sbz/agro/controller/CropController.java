@@ -53,7 +53,7 @@ public class CropController {
         if (cropService.removeCrop(id)) {
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().body("Could not delete crop");
     }
 
     @PutMapping

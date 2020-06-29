@@ -35,7 +35,12 @@ public class CropServiceImpl implements CropService {
         if (c == null) {
             return false;
         }
-        cropRepository.delete(c);
+        
+        try{
+        	cropRepository.delete(c);
+        } catch (Exception e){
+        	return false;
+        }
         return true;
     }
 

@@ -51,6 +51,7 @@ function remove(id) {
     }).then( response => {
         return response.data;
     }).catch(error => {
+        alert("Could not delete crop");
         return Promise.reject(error);
     });
 }

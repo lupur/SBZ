@@ -24,8 +24,10 @@ class Dashboard extends React.Component {
     }
     async componentDidMount() {
         await fieldService.getAll().then(response =>{
-            this.setState({fields : response })
-            this.getArrays(response[0].id)
+            if (response !== undefined && response.length != 0) {
+        	this.setState({fields : response })
+        	this.getArrays(response[0].id)
+            }
         });
     }
 
