@@ -104,7 +104,7 @@ public class FieldController {
         if (fieldService.removeField(fieldId)) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body("Could not delete field");
         }
     }
 }

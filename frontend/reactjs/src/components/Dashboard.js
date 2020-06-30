@@ -2,9 +2,9 @@ import React from 'react';
 
 import Chart from './Chart'
 import Array from './Array'
-import {Form } from 'react-bootstrap'
-import {fieldItemService} from '../services/fieldItemService'
-import {fieldService} from '../services/fieldService'
+import { Form } from 'react-bootstrap'
+import { fieldItemService } from '../services/fieldItemService'
+import { fieldService } from '../services/fieldService'
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -23,10 +23,10 @@ class Dashboard extends React.Component {
 
     }
     async componentDidMount() {
-        await fieldService.getAll().then(response =>{
+        await fieldService.getAll().then(response => {
             if (response !== undefined && response.length != 0) {
-        	this.setState({fields : response })
-        	this.getArrays(response[0].id)
+                this.setState({ fields: response })
+                this.getArrays(response[0].id)
             }
         });
     }
@@ -40,23 +40,23 @@ class Dashboard extends React.Component {
 
     getArrays(fieldId) {
         fieldItemService.getFieldItems(fieldId)
-        .then(response => {
-            this.setState({arrays: response.arrays });
-            console.log(this.state.arrays);
-        }).catch(error => {
-            console.log(error);
-        })
+            .then(response => {
+                this.setState({ arrays: response.arrays });
+                console.log(this.state.arrays);
+            }).catch(error => {
+                console.log(error);
+            })
     }
 
     updateChart(deviceEUI, deviceType) {
-        if(deviceType === 'MOISTURE') {
-            this.setState({selectedMoisture: deviceEUI});
-        } else if(deviceType === 'VALVE') {
-            this.setState({selectedValve: deviceEUI});
-        } else if(deviceType === 'PUMP') {
-            this.setState({selectedPump: deviceEUI});
-        } else if(deviceType === 'RAIN') {
-            this.setState({selectedRain: deviceEUI});
+        if (deviceType === 'MOISTURE') {
+            this.setState({ selectedMoisture: deviceEUI });
+        } else if (deviceType === 'VALVE') {
+            this.setState({ selectedValve: deviceEUI });
+        } else if (deviceType === 'PUMP') {
+            this.setState({ selectedPump: deviceEUI });
+        } else if (deviceType === 'RAIN') {
+            this.setState({ selectedRain: deviceEUI });
         }
     }
 
@@ -71,7 +71,7 @@ class Dashboard extends React.Component {
                             value={this.state.selectedField}
                             onChange={this.getFieldDeatils}>
                             {this.state.fields && this.state.fields.map((field, i) =>
-                            <option key={field.id} value={field.id}>{field.name}</option>
+                                <option key={field.id} value={field.id}>{field.name}</option>
                             )}
                         </Form.Control>
                     </Form.Group>
@@ -80,40 +80,40 @@ class Dashboard extends React.Component {
                     <div className="col-lg-6">
                         <div className="row">
                             {this.state.arrays && this.state.arrays.map((array, i) =>
-                                <div className="col-lg-3">
-                                    <Array array = {array} parent = {this}></Array>
+                                <div className="col-lg-4">
+                                    <Array array={array} parent={this}></Array>
                                 </div>
-                            )}                       
+                            )}
                         </div>
 
                     </div>
-                    
+
                     <div className="col-lg-6">
                         <div className="row">
                             <div className="col-lg-6">
                                 Pump status
-                                {this.state.selectedPump ? <Chart deviceEUI ={this.state.selectedPump} readingType='STATE'></Chart> : null}
+                                {this.state.selectedPump ? <Chart deviceEUI={this.state.selectedPump} readingType='STATE'></Chart> : null}
                             </div>
                             <div className="col-lg-6">
                                 Rain status
-                                {this.state.selectedRain ? <Chart deviceEUI ={this.state.selectedRain} readingType='RAIN'></Chart> : null}
+                                {this.state.selectedRain ? <Chart deviceEUI={this.state.selectedRain} readingType='RAIN'></Chart> : null}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-lg-6">
                                 Moisture values
-                                {this.state.selectedMoisture ? <Chart deviceEUI ={this.state.selectedMoisture} readingType='MOISTURE'></Chart> : null}
+                                {this.state.selectedMoisture ? <Chart deviceEUI={this.state.selectedMoisture} readingType='MOISTURE'></Chart> : null}
                             </div>
                             <div className="col-lg-6">
                                 Valve status
-                                {this.state.selectedValve ? <Chart deviceEUI ={this.state.selectedValve} readingType='STATE'></Chart> : null}
+                                {this.state.selectedValve ? <Chart deviceEUI={this.state.selectedValve} readingType='STATE'></Chart> : null}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         );
-	}
+    }
 }
 
 export default Dashboard;
