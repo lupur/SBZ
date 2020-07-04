@@ -9,4 +9,6 @@ public interface ReadingService {
     Reading addReading(ReadingDto newReading);
 
     List<ReadingDto> getReadingsBySerialNoAndName(String serialNo, String name);
+    
+    List<ReadingDto> getLastReadings(String serialNo, String name);
 }

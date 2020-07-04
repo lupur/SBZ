@@ -57,4 +57,21 @@ public class ReadingServiceImpl implements ReadingService {
         return readingsDto;
     }
 
+	@Override
+	public List<ReadingDto> getLastReadings(String serialNo, String name) {
+		
+        Device device = deviceRepository.findBySerialNo(serialNo);
+        if (device == null)
+            return null;
+
+        List<Reading> readings = readingRepository.getLastReadings(device.getId(), name);
+        List<ReadingDto> readingsDto = new ArrayList<>();
+        for (Reading r : readings) {
+            ReadingDto readingDto = new ReadingDto(r);
+            readingsDto.add(readingDto);
+        }
+        // TODO Auto-generated method stub
+        return readingsDto;
+	}
+
 }

@@ -77,6 +77,6 @@ public class ReadingController {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok().body(readingService.getReadingsBySerialNoAndName(serialNo, name));
+        return ResponseEntity.ok().body(readingService.getLastReadings(serialNo, name));
     }
 }

@@ -20,6 +20,10 @@ class Dashboard extends React.Component {
         this.getFieldDeatils = this.getFieldDeatils.bind(this);
         this.getArrays = this.getArrays.bind(this);
         this.updateChart = this.updateChart.bind(this);
+        this.pumpChart = React.createRef();
+        this.rainChart = React.createRef();
+        this.moistureChart = React.createRef();
+        this.valveChart = React.createRef();
 
     }
     async componentDidMount() {
@@ -50,13 +54,14 @@ class Dashboard extends React.Component {
 
     updateChart(deviceEUI, deviceType) {
         if (deviceType === 'MOISTURE') {
-            this.setState({ selectedMoisture: deviceEUI });
+            this.moistureChart.current.changeDeviceEUI(deviceEUI);
         } else if (deviceType === 'VALVE') {
-            this.setState({ selectedValve: deviceEUI });
+            this.valveChart.current.changeDeviceEUI(deviceEUI);
         } else if (deviceType === 'PUMP') {
-            this.setState({ selectedPump: deviceEUI });
+            console.log("Klikla pumpu");
+            this.pumpChart.current.changeDeviceEUI(deviceEUI);
         } else if (deviceType === 'RAIN') {
-            this.setState({ selectedRain: deviceEUI });
+            this.rainChart.current.changeDeviceEUI(deviceEUI);
         }
     }
 
@@ -92,21 +97,21 @@ class Dashboard extends React.Component {
                         <div className="row">
                             <div className="col-lg-6">
                                 Pump status
-                                {this.state.selectedPump ? <Chart deviceEUI={this.state.selectedPump} readingType='STATE'></Chart> : null}
+                                <Chart ref = {this.pumpChart} deviceEUI={this.state.selectedPump} readingType='STATE'></Chart>
                             </div>
                             <div className="col-lg-6">
                                 Rain status
-                                {this.state.selectedRain ? <Chart deviceEUI={this.state.selectedRain} readingType='RAIN'></Chart> : null}
+                                <Chart ref= {this.rainChart} readingType='RAIN'></Chart>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-lg-6">
                                 Moisture values
-                                {this.state.selectedMoisture ? <Chart deviceEUI={this.state.selectedMoisture} readingType='MOISTURE'></Chart> : null}
+                                <Chart ref = {this.moistureChart} readingType='MOISTURE'></Chart>
                             </div>
                             <div className="col-lg-6">
                                 Valve status
-                                {this.state.selectedValve ? <Chart deviceEUI={this.state.selectedValve} readingType='STATE'></Chart> : null}
+                                <Chart ref={this.valveChart} readingType='STATE'></Chart>
                             </div>
                         </div>
                     </div>
