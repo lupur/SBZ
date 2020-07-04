@@ -5,10 +5,10 @@ class Actuator:
         self.status = 'OK'
 
     def turnOn(self):
-        self.state = "ON"
+        self.state = 0
 
     def turnOff(self):
-        self.state = "OFF"
+        self.state = 1
 
     def statusToError(self):
         self.status = "ERROR"

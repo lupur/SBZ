@@ -6,11 +6,11 @@ class MoistureSensor:
 
     def increaseMoisture(self):
         if self.moistureValue <= 95:
-            self.moistureValue += 5
+            self.moistureValue += 3
 
     def decreaseMoisture(self):
         if self.moistureValue >=5:
-            self.moistureValue -= 5
+            self.moistureValue -= 3
 
     def statusToError(self):
         self.status = "ERROR"

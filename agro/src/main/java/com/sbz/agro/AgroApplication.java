@@ -106,6 +106,7 @@ public class AgroApplication {
 //        KieSession kieSession = kContainer.newKieSession("irrigationSession");
 
         kieSession.setGlobal("valveStateMap", new HashMap<>());
+        kieSession.setGlobal("pumpHasCapacity", true);
 
 //        EntryPoint irrigationStream = kieSession.getEntryPoint("Irrigation");
 
