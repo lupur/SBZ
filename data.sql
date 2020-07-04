@@ -25,9 +25,9 @@ INSERT INTO sbz_db.agro_users (password, role, username) VALUES ('$2a$10$UcVkaNa
 INSERT INTO sbz_db.crops (crop_name) VALUES ('Corn');
 INSERT INTO sbz_db.crops (crop_name) VALUES ('Weath');
 
-INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Gornja parcela', '2020-05-20 02:00:00', '1', '1');
-INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Donja parcela', '2020-05-20 02:00:00', '1', '1');
-INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('8000', 'Kocka', '2020-05-20 02:00:00', '1', '1');
+INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Gornja parcela', '2020-07-03 02:00:00', '1', '1');
+INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('2000', 'Donja parcela', '2020-07-03 02:00:00', '1', '1');
+INSERT INTO sbz_db.fields (field_area, field_name, seeding_date, crop_id, user_id) VALUES ('8000', 'Kocka', '2020-07-03 02:00:00', '1', '1');
 
 INSERT INTO sbz_db.device_arrays (field_id) VALUES ('1');
 INSERT INTO sbz_db.device_arrays (field_id) VALUES ('1');
