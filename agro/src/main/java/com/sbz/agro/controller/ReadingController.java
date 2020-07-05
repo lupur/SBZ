@@ -1,5 +1,7 @@
 package com.sbz.agro.controller;
 
+import java.util.Date;
+
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sbz.agro.dto.ReadingDto;
+import com.sbz.agro.enums.DeviceReadingTypes;
+import com.sbz.agro.enums.ErrorObjectTypes;
+import com.sbz.agro.enums.ReadingValues;
+import com.sbz.agro.model.ErrorEvent;
 import com.sbz.agro.model.Reading;
 import com.sbz.agro.security.TokenUtil;
 import com.sbz.agro.service.AuthService;
 import com.sbz.agro.service.DeviceService;
+import com.sbz.agro.service.ErrorEventService;
 import com.sbz.agro.service.ReadingService;
 
 @RestController
@@ -40,6 +47,12 @@ public class ReadingController {
 
     @Autowired
     KieSession kieIrrigationSession;
+    
+    @Autowired
+    KieSession kieErrorEventSession;
+    
+    @Autowired
+    ErrorEventService eeService;
 
     @PostMapping()
     public ResponseEntity addReading(@RequestBody ReadingDto newReading) {
@@ -50,13 +63,15 @@ public class ReadingController {
         if (reading == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        
+        if(reading.getName().equals(DeviceReadingTypes.STATUS.toString())) {
+        	kieIrrigationSession.getAgenda().getAgendaGroup("errorEvent").setFocus();
+        	kieIrrigationSession.insert(reading);
+        }
 
         kieIrrigationSession.getAgenda().getAgendaGroup("irrigation").setFocus();
         kieIrrigationSession.insert(reading);
 
-//        EntryPoint irrigationStream = kieIrrigationSession.getEntryPoint("Irrigation");
-        kieIrrigationSession.insert(reading);
-//        kieIrrigationSession.fireAllRules();
 
         return ResponseEntity.ok().build();
     }

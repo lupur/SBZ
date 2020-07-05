@@ -5,6 +5,7 @@ import com.sbz.agro.model.Device;
 
 public class DeviceDto {
 
+	private Long id;
     private String serialNo;
     private Long arrayId;
     private DeviceDetails type;
@@ -16,13 +17,22 @@ public class DeviceDto {
     }
 
     public DeviceDto(Device device) {
+    	this.id = device.getId();
         this.serialNo = device.getSerialNo();
         this.arrayId = device.getArray().getId();
         this.type = device.getType();
         this.position = device.getPosition();
     }
 
-    public String getSerialNo() {
+    public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getSerialNo() {
         return serialNo;
     }
 

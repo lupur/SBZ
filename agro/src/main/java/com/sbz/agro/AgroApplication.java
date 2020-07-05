@@ -17,55 +17,16 @@ import com.sbz.agro.model.DeviceArray;
 import com.sbz.agro.model.Field;
 import com.sbz.agro.repository.DeviceArrayRepository;
 import com.sbz.agro.repository.DeviceRepository;
+import com.sbz.agro.repository.ErrorEventRepository;
 import com.sbz.agro.repository.FieldRepository;
+import com.sbz.agro.service.ErrorEventService;
+import com.sbz.agro.service.ErrorEventServiceImpl;
 
 @SpringBootApplication
 public class AgroApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AgroApplication.class, args);
-
-//        System.out.println("********************************************");
-////        KieServices ks = KieServices.Factory.get();
-////        KieContainer kc = ks.newKieContainer(ks.newReleaseId("com.sbz", "agro-kjar", "0.0.1-SNAPSHOT"));
-////        KieSession kieSession = kc.newKieSession("irrigationSession");
-//
-//        List<String> supportedDevices = new ArrayList();
-//        supportedDevices.add("PUMP");
-//
-//        KieSession kieSession = TemplateService.GenerateRules(supportedDevices);
-//
-//        Device d0 = new Device();
-//        d0.setId(-1l);
-//        d0.setSerialNo("PUMP_2212");
-//
-//        Device d1 = new Device();
-//        d1.setId(-1l);
-//        d1.setSerialNo("VALVE_2212");
-//
-//        kieSession.insert(d0);
-//        kieSession.insert(d1);
-//        kieSession.fireAllRules();
-//
-//        System.out.println("PUMP ID : " + d0.getId());
-//        System.out.println("VALVE ID : " + d1.getId());
-//
-//        supportedDevices.add("VALVE");
-//        kieSession = TemplateService.GenerateRules(supportedDevices);
-//        d0 = new Device();
-//        d0.setId(-1l);
-//        d0.setSerialNo("PUMP_weqw");
-//
-//        d1 = new Device();
-//        d1.setId(-1l);
-//        d1.setSerialNo("VALVE_2212");
-//
-//        kieSession.insert(d0);
-//        kieSession.insert(d1);
-//        kieSession.fireAllRules();
-//
-//        System.out.println("PUMP ID : " + d0.getId());
-//        System.out.println("VALVE ID : " + d1.getId());
     }
 
     @Autowired
@@ -76,6 +37,9 @@ public class AgroApplication {
 
     @Autowired
     FieldRepository fieldRepository;
+    
+    @Autowired
+    ErrorEventService errorEventService;
 
     @Bean
     public KieContainer kieContainer() {
@@ -84,6 +48,24 @@ public class AgroApplication {
         KieScanner kScanner = ks.newKieScanner(kContainer);
         kScanner.start(10_000);
         return kContainer;
+    }
+    
+    @Bean
+    public KieSession kieErrorEventSession() {
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kc = ks.newKieContainer(ks.newReleaseId("com.sbz", "agro-kjar", "0.0.1-SNAPSHOT"));
+        KieSession kieSession = kc.newKieSession("errorEventSession");
+        
+        new Thread() {
+            @Override
+            public void run() {
+                kieSession.fireUntilHalt();
+            }
+        }.start();
+        
+        kieSession.setGlobal("errorEventService", new ErrorEventServiceImpl());
+        
+        return kieSession;
     }
 
     @Bean
@@ -106,6 +88,7 @@ public class AgroApplication {
 //        KieSession kieSession = kContainer.newKieSession("irrigationSession");
 
         kieSession.setGlobal("valveStateMap", new HashMap<>());
+        kieSession.setGlobal("errorEventService", errorEventService);
 
 //        EntryPoint irrigationStream = kieSession.getEntryPoint("Irrigation");
 

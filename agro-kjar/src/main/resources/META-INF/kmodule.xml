@@ -7,5 +7,6 @@
     </kbase>
     <kbase name="irrigationCEP" eventProcessingMode="stream" packages="drools.spring.rules">
         <ksession name="irrigationSession" clockType="realtime"/>
+        <ksession name="errorEventSession" clockType="realtime"/>
     </kbase>
 </kmodule>

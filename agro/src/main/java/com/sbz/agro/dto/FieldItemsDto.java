@@ -6,6 +6,7 @@ import java.util.List;
 public class FieldItemsDto {
 	
 	private String name;
+	private Boolean inErrorState;
 	private List<ArrayDto> arrays = new ArrayList<>();
 	
 	public FieldItemsDto() {
@@ -23,6 +24,14 @@ public class FieldItemsDto {
 
 	public void setName(String name) {
 		this.name = name;
+	}	
+
+	public Boolean getInErrorState() {
+		return inErrorState;
+	}
+
+	public void setInErrorState(Boolean inErrorState) {
+		this.inErrorState = inErrorState;
 	}
 
 	public List<ArrayDto> getArrays() {
@@ -43,6 +52,8 @@ public class FieldItemsDto {
 		private Long id;
 		private String pumpEUI;
 		private String rainEUI;
+		private Boolean arrayInErrorState;
+		private Boolean pumpInErrorState;
 		private List<SetDto> sets = new ArrayList<>();
 		
 		public ArrayDto() {
@@ -80,6 +91,22 @@ public class FieldItemsDto {
 			this.rainEUI = rainEUI;
 		}
 
+		public Boolean getArrayInErrorState() {
+			return arrayInErrorState;
+		}
+
+		public void setArrayInErrorState(Boolean arrayInErrorState) {
+			this.arrayInErrorState = arrayInErrorState;
+		}
+
+		public Boolean getPumpInErrorState() {
+			return pumpInErrorState;
+		}
+
+		public void setPumpInErrorState(Boolean pumpInErrorState) {
+			this.pumpInErrorState = pumpInErrorState;
+		}
+
 		public List<SetDto> getSets() {
 			return sets;
 		}
@@ -98,6 +125,8 @@ public class FieldItemsDto {
 			private String moistureEUI;
 			private String valveEUI;
 			private Integer position;
+			private Boolean moistureInErrorState;
+			private Boolean valveInErrorState;
 			
 			public SetDto() {
 				
@@ -131,6 +160,22 @@ public class FieldItemsDto {
 
 			public void setPosition(Integer position) {
 				this.position = position;
+			}
+
+			public Boolean getMoistureInErrorState() {
+				return moistureInErrorState;
+			}
+
+			public void setMoistureInErrorState(Boolean moistureInErrorState) {
+				this.moistureInErrorState = moistureInErrorState;
+			}
+
+			public Boolean getValveInErrorState() {
+				return valveInErrorState;
+			}
+
+			public void setValveInErrorState(Boolean valveInErrorState) {
+				this.valveInErrorState = valveInErrorState;
 			}
 			
 		}

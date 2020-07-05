@@ -20,5 +20,3 @@ public interface ReadingRepository extends JpaRepository<Reading, Long> {
     		nativeQuery = true)
     List<Reading> getLastReadings(Long deviceId, String name);
 }
-
-
