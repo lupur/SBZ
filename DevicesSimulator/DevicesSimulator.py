@@ -18,8 +18,8 @@ stateReading = "STATE"
 
 pump0 = Actuator("Pump0000")
 rain0 = RainSensor("Rain0000")
-moist01 = MoistureSensor("Moisture0000", 20)
-moist02 = MoistureSensor("Moisture0001", 40)
+moist01 = MoistureSensor("Moisture0000", 50)
+moist02 = MoistureSensor("Moisture0001", 60)
 valve01 = Actuator("Valve0000")
 valve02 = Actuator("Valve0001")
 
@@ -77,7 +77,10 @@ def simulateArray1():
     global valve01
     global valve02
 
+    rain0.setNoRain()
+
     while True:
+        print("Hello man\n")
         sendReading(pump0.serialNumber, statusReading, pump0.status)
         sendReading(rain0.serialNumber, statusReading, rain0.status)
         sendReading(moist01.serialNumber, statusReading, moist01.status)
@@ -93,6 +96,16 @@ def simulateArray1():
         sendReading(valve01.serialNumber, stateReading, valve01.state)
         sendReading(valve02.serialNumber, stateReading, valve02.state)
         time.sleep(5)
+
+        if valve01.isOn():
+            moist01.increaseMoisture()
+        else:
+            moist01.decreaseMoisture()
+
+        if valve02.isOn():
+            moist02.increaseMoisture()
+        else:
+            moist02.decreaseMoisture()
 
 
 def simulateArray2():
@@ -120,6 +133,7 @@ def simulateArray2():
         sendReading(valve12.serialNumber, stateReading, valve12.state)
         time.sleep(5)
 
+
 def simulateOneSet():
     global pump0
     global rain0
@@ -131,20 +145,38 @@ def simulateOneSet():
     while True:
         sendReading(pump0.serialNumber, statusReading, pump0.status)
         sendReading(rain0.serialNumber, statusReading, rain0.status)
+        time.sleep(1)
+
         sendReading(moist01.serialNumber, statusReading, moist01.status)
         sendReading(valve01.serialNumber, statusReading, valve01.status)
         time.sleep(1)
 
         sendReading(pump0.serialNumber, stateReading, pump0.state)
         sendReading(rain0.serialNumber, rainReading, rain0.raining)
+        time.sleep(1)
+
         sendReading(moist01.serialNumber, moistureReading, moist01.moistureValue)
         sendReading(valve01.serialNumber, stateReading, valve01.state)
+        time.sleep(1)
+
+        sendReading(moist02.serialNumber, moistureReading, moist02.moistureValue)
+        sendReading(valve02.serialNumber, stateReading, valve02.state)
+        time.sleep(1)
+
+        sendReading(moist02.serialNumber, statusReading, moist02.status)
+        sendReading(valve02.serialNumber, statusReading, valve02.status)
         time.sleep(1)
 
         if valve01.isOn():
             moist01.increaseMoisture()
         else:
             moist01.decreaseMoisture()
+
+        # if valve02.isOn():
+        #     moist02.increaseMoisture()
+        # else:
+        #     moist02.decreaseMoisture()
+
 
 if __name__ == "__main__":
 
@@ -153,11 +185,14 @@ if __name__ == "__main__":
     # thread3 = threading.Thread(target=simulateArray2)
 
     oneSetSimulation = threading.Thread(target=simulateOneSet)
+    # array1Simulation = threading.Thread(target=simulateArray1)
 
     thread1.start()
     # thread2.start()
     # thread3.start()
     oneSetSimulation.start()
+        # array1Simulation.start()
+
     try:
         while True:
             time.sleep(1)

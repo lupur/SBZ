@@ -1,9 +1,7 @@
 package com.sbz.agro.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -36,7 +34,7 @@ public class Field {
     @ManyToOne
     @JoinColumn(name = "crop_id", nullable = false)
     private Crop crop;
-    @OneToMany(mappedBy = "field", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "field", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<DeviceArray> deviceArrays;
     @Column(name = "seeding_date")
     private Date seedingDate;
@@ -112,7 +110,6 @@ public class Field {
     }
 
     public Double getMoistureLowerThreshold() {
-        System.out.println("Size: " + crop.getGrowthPhases().size());
         for (GrowthPhase growthPhase : crop.getGrowthPhases()) {
             long diff = (new Date()).getTime() - seedingDate.getTime();
             long diffDays = diff / (24 * 60 * 60 * 1000);
@@ -121,6 +118,7 @@ public class Field {
                 return growthPhase.getMoistureLowerThreshold();
             }
         }
+        System.out.println("Error - no valid seeding date");
         return -1D;
     }
 

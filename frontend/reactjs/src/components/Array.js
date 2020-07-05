@@ -6,6 +6,9 @@ class Array extends React.Component {
         super(props);
 
         this.array = props.array;
+        this.array.sets.sort(function (a, b) {
+            return a.position - b.position;
+          });
         this.parent = props.parent;
 
         this.selectDevice = this.selectDevice.bind(this);

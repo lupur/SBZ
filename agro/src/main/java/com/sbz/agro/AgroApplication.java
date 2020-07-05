@@ -89,6 +89,7 @@ public class AgroApplication {
 
         kieSession.setGlobal("valveStateMap", new HashMap<>());
         kieSession.setGlobal("errorEventService", errorEventService);
+        kieSession.setGlobal("pumpHasCapacity", true);
 
 //        EntryPoint irrigationStream = kieSession.getEntryPoint("Irrigation");
 

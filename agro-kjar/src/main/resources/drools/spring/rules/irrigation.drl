@@ -24,10 +24,60 @@ global ActuatorService actuatorService;
 
 global Map<DeviceKey, Boolean> valveStateMap;// = new HashMap<DeviceKey, boolean>();
 
+global Boolean pumpHasCapacity;
 
-rule "Open valve on low moisture"
+rule "Check pump capacity"
+    salience 20
     agenda-group "irrigation"
     when
+        eval(pumpHasCapacity == true)
+        //Checking if its moisture reading with critical low value
+        $reading: Reading(  name == DeviceReadingTypes.MOISTURE.name(),
+                            $sensor: device
+                        ) over window:length(1)
+        
+         Reading(   name == DeviceReadingTypes.MOISTURE.name(),
+                    this == $reading,
+                    device.getArray().getField().getMoistureLowerThreshold() > Double.parseDouble(value)
+                )
+
+
+        //Get valve which is on the same position as sensor which sent reading
+        $valve: Device(
+                    array.id == $sensor.array.id,
+                    position == $sensor.position,
+                   type == DeviceDetails.VALVE);
+
+        //Get last status of the valve
+        $valveStatus: Reading(
+                        device.id == $valve.id,
+                        name == DeviceReadingTypes.STATUS.name()
+                        ) over window:length(1)
+
+        //that status must be OK
+        Reading(value == ReadingValues.OK.name()) from $valveStatus
+
+        //Get last open/closed state of valve
+        $valveState: Reading(
+                        device.id == $valve.id,
+                        name ==  DeviceReadingTypes.STATE.name()
+                        ) over window:length(1)
+
+        //If we want to open valve - it must be currently closed
+        Reading($valveState == this, value == ReadingValues.OFF.name())
+
+        eval( valveStateMap.size() >= 1 )
+        
+    then
+        System.out.println("-- Pump has no capacity: --" );
+        pumpHasCapacity = false;
+end
+
+rule "Open valve on low moisture"
+    salience 10
+    agenda-group "irrigation"
+    when
+        eval(pumpHasCapacity == true)
         //Checking if its moisture reading with critical low value
         $reading: Reading(  name == DeviceReadingTypes.MOISTURE.name(),
                             $sensor: device
@@ -48,7 +98,7 @@ rule "Open valve on low moisture"
         $valve: Device(
                     array.id == $sensor.array.id,
                     position == $sensor.position,
-                    type == DeviceDetails.VALVE);
+                   type == DeviceDetails.VALVE);
 
         //Get last status of the valve
         $valveStatus: Reading(
@@ -68,7 +118,8 @@ rule "Open valve on low moisture"
         //If we want to open valve - it must be currently closed
         Reading($valveState == this, value == ReadingValues.OFF.name())
     then
-        System.out.println("-- Low moisture found, should open valve --");
+        System.out.println("-- Low moisture found, should open valve with ID : --"  );
+        System.out.println("-- MOIST ID :" + $reading.getDevice().getId()  );
         actuatorService.SendActuation($valve.getSerialNo(), "ON");
         DeviceKey dk = new DeviceKey($valve.getArray().getId(), $valve.getId());
         valveStateMap.put(dk, true);
@@ -114,6 +165,7 @@ rule "Close valve on high moisture"
         actuatorService.SendActuation($valve.getSerialNo(), "OFF");
         DeviceKey dk = new DeviceKey($valve.getArray().getId(), $valve.getId());
         valveStateMap.put(dk, false);
+        pumpHasCapacity = true;
 end
 
 rule "Open pump"
@@ -231,7 +283,7 @@ rule "Close valves since it is raining"
         
         for(Device val : $sensor.getArray().getValves()) {
             DeviceKey dk = new DeviceKey($sensor.getArray().getId(), val.getId());
-            valveStateMap.put(dk, false);
+            valveStateMap.remove(dk);
             actuatorService.SendActuation(val.getSerialNo(), "OFF");
         }
 end

@@ -33,7 +33,7 @@ class Dashboard extends React.Component {
                 this.setState({ fields: response })
                 this.selectedFieldId =  response[0].id;
                 this.getArrays();
-                setInterval(this.getArrays, 5000);
+                setInterval(this.getArrays, 2000);
             }
         });
     }
